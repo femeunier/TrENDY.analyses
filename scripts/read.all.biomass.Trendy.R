@@ -1,5 +1,9 @@
 rm(list = ls())
 
+install.packages(c("ncdf4",
+                   "reshape2",
+                   "lubridate","plotbiomes","ggplot2","tidyr","raster","RColorBrewer","devtools"))
+
 library(ncdf4)
 library(reshape2)
 library(dplyr)
@@ -7,7 +11,7 @@ library(lubridate)
 library(plotbiomes)
 library(ggplot2)
 library(tidyr)
-library(YGB)
+# library(YGB)
 library(raster)
 library(RColorBrewer)
 library(TrENDY.analyses)
