@@ -1,14 +1,11 @@
 rm(list = ls())
 
-install.packages(c("ncdf4",
-                   "reshape2",
-                   "lubridate","plotbiomes","ggplot2","tidyr","raster","RColorBrewer","devtools"))
+# install.packages(c("ncdf4","reshape2","lubridate","ggplot2","tidyr","raster","RColorBrewer"))
 
 library(ncdf4)
 library(reshape2)
 library(dplyr)
 library(lubridate)
-library(plotbiomes)
 library(ggplot2)
 library(tidyr)
 # library(YGB)
@@ -16,13 +13,14 @@ library(raster)
 library(RColorBrewer)
 library(TrENDY.analyses)
 
-maindir <- "/data/gent/vo/000/gvo00074/felicien/TrENDY/data"
-maindir <- "/home/femeunier/Documents/projects/TrENDY.analyses/data/"
-model.names <- c("CLASSIS","CLM5.0","DLEM","IBIS","ISAM",
+maindir <- "/data/gent/vo/000/gvo00074/felicien/TrENDY/"
+# maindir <- "/home/femeunier/Documents/projects/TrENDY.analyses/data/"
+
+model.names <- c("CLASSIC","CLM5.0","DLEM","IBIS","ISAM",
                  "ISBA-CTRIP","JSBACH","JULES-ES","LPJ-GUESS",
                  "LPJ","LPX-Bern","ORCHIDEE-CNP","SDGVM","VISIT",
                  "YIBs")
-model.dir <- c("","","","")
+model.dir <- rep("",length(model.names))
 scenarios <- c("S2")
 variables <- c("cVeg","cRoot")
 
@@ -60,6 +58,8 @@ for (imodel in seq(1,length(model.dir))){
                                             sep = ""))
 
       if (!file.exists(ncfile)){
+
+        warning(paste0("Couldn't find this file:",ncfile))
         next()
       }
 
