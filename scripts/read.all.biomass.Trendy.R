@@ -1,6 +1,6 @@
 rm(list = ls())
 
-# install.packages(c("ncdf4","reshape2","lubridate","ggplot2","tidyr","raster","RColorBrewer"))
+# install.packages(c("ncdf4","reshape2","lubridate","ggplot2","tidyr","RColorBrewer"))
 
 library(ncdf4)
 library(reshape2)
