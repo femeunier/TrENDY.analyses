@@ -41,8 +41,6 @@ read.Trendy <- function(ncfile,
 
   nc_close(nc)
 
-
-
   if (nchar(unit.time[3]) == 4) {
     unit.time[3] <- paste0(unit.time[3],"01/01")
   }
