@@ -3,7 +3,9 @@ read.Trendy <- function(ncfile,
                         lon.names = c("longitude","lon","lon_FULL"),
                         time.names = c("time","time_counter"),
                         variables.names = c("npp"),
-                        years2select){
+                        years2select,
+                        lat2select =  NULL,
+                        lon2select = NULL){
 
   nc <- nc_open(ncfile)
 
@@ -51,9 +53,22 @@ read.Trendy <- function(ncfile,
   round.years <- floor(years)
 
   select <- which(round.years >= years2select[1],round.years <= years2select[2])
+
+  if (!is.null(lat2select)){
+    select.lat <- which(lats>=lat2select[1] & lats<=lat2select[2])
+  } else{
+    select.lat <- 1:length(lats)
+  }
+
+  if (!is.null(lon2select)){
+    select.lon <- which(lons>=lon2select[1] & lons<=lon2select[2])
+  } else{
+    select.lon <- 1:length(lons)
+  }
+
   times.selected <- times[select]
 
-  cdf <- melt(values[,,select]) %>%
+  cdf <- melt(values[select.lon,select.lat,select]) %>%
     rename(lon = Var1,
            lat = Var2,
            time = Var3) %>%
