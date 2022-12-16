@@ -47,6 +47,13 @@ read.Trendy <- function(ncfile,
     i = i + 1
   }
 
+  # Subset
+
+  years <- year(unit.time[3]) + (yday(unit.time[3]) -1)/365 +
+    hour(paste(unit.time[3],unit.time[4]))/24/365  + times * udunits2::ud.convert(1,unit.time[1],"days")/365  # approximate years
+  round.years <- floor(years)
+  times.selected <- years[select]
+
   select <- which(round.years >= years2select[1],round.years <= years2select[2])
 
   if (!is.null(lat2select)){
@@ -62,6 +69,8 @@ read.Trendy <- function(ncfile,
   } else{
     select.lon <- 1:length(lons)
   }
+
+  # Read values
 
   values <- NULL ; i = 1
   while(is.null(values) & i <= length(variables.names)){
@@ -79,10 +88,6 @@ read.Trendy <- function(ncfile,
     unit.time[3] <- paste0(unit.time[3],"/01/01")
   }
 
-  years <- year(unit.time[3]) + (yday(unit.time[3]) -1)/365 +
-    hour(paste(unit.time[3],unit.time[4]))/24/365  + times * udunits2::ud.convert(1,unit.time[1],"days")/365  # approximate years
-  round.years <- floor(years)
-  times.selected <- years[select]
 
   cdf <- melt(values) %>%
     rename(lon = Var1,
