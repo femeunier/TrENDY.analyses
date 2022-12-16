@@ -7,6 +7,20 @@ read.Trendy <- function(ncfile,
                         lat2select =  NULL,
                         lon2select = NULL){
 
+  # library(ncdf4)
+  # library(lubridate)
+  # library(reshape2)
+  #
+  # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDY/ISBA-CTRIP_S2_cVeg.nc"
+  # lat.names = c("latitude","lat","lat_FULL")
+  # lon.names = c("longitude","lon","lon_FULL")
+  # time.names = c("time","time_counter")
+  # variables.names = c("cVeg")
+  # years2select  = c(1968,Inf)
+  # lat2select =  c(-20,15)
+  # lon2select = c(-15,50)
+
+
   nc <- nc_open(ncfile)
 
   lats <- NULL ; i = 1
@@ -56,12 +70,14 @@ read.Trendy <- function(ncfile,
 
   if (!is.null(lat2select)){
     select.lat <- which(lats>=lat2select[1] & lats<=lat2select[2])
+    lats <- lats[select.lat]
   } else{
     select.lat <- 1:length(lats)
   }
 
   if (!is.null(lon2select)){
     select.lon <- which(lons>=lon2select[1] & lons<=lon2select[2])
+    lons <- lons[select.lon]
   } else{
     select.lon <- 1:length(lons)
   }

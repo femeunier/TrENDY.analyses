@@ -20,6 +20,9 @@ model.names <- c("ISBA-CTRIP","CLASSIC","CLM5.0","DLEM","IBIS","ISAM",
                  "JSBACH","JULES-ES","LPJ-GUESS",
                  "LPJ","LPX-Bern","ORCHIDEE-CNP","SDGVM","VISIT",
                  "YIBs")
+
+model.names <- c("ISBA-CTRIP")
+
 model.dir <- rep("",length(model.names))
 scenarios <- c("S2")
 variables <- c("cVeg","cRoot")
@@ -65,10 +68,12 @@ for (imodel in seq(1,length(model.dir))){
 
       cdf <- read.Trendy(ncfile,
                          variables.names = cvariable,
-                         years2select = c(1968,Inf))
+                         years2select = c(1968,Inf),
+                         lat2select =  c(-20,15),
+                         lon2select = c(-15,50))
 
       saveRDS(cdf,
-              paste0("./outputs/Trendy",cmodel,".",cscenario,".",cvariable,".RDS"))
+              paste0("./outputs/Trendy",cmodel,".",cscenario,".",cvariable,"_centralAfrica.RDS"))
 
 
 
