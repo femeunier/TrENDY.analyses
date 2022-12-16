@@ -49,6 +49,11 @@ read.Trendy <- function(ncfile,
 
   # Subset
 
+  if (nchar(unit.time[3]) == 4) {
+    unit.time[3] <- paste0(unit.time[3],"/01/01")
+  }
+
+
   years <- year(unit.time[3]) + (yday(unit.time[3]) -1)/365 +
     hour(paste(unit.time[3],unit.time[4]))/24/365  + times * udunits2::ud.convert(1,unit.time[1],"days")/365  # approximate years
   round.years <- floor(years)
@@ -83,11 +88,6 @@ read.Trendy <- function(ncfile,
 
 
   nc_close(nc)
-
-  if (nchar(unit.time[3]) == 4) {
-    unit.time[3] <- paste0(unit.time[3],"/01/01")
-  }
-
 
   cdf <- melt(values) %>%
     rename(lon = Var1,
