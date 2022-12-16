@@ -11,7 +11,7 @@ read.Trendy <- function(ncfile,
   # library(lubridate)
   # library(reshape2)
   #
-  # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDY/ISBA-CTRIP_S2_cVeg.nc"
+  # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDY/VISIT_S2_cVeg.nc"
   # lat.names = c("latitude","lat","lat_FULL")
   # lon.names = c("longitude","lon","lon_FULL")
   # time.names = c("time","time_counter")
@@ -19,7 +19,6 @@ read.Trendy <- function(ncfile,
   # years2select  = c(1968,Inf)
   # lat2select =  c(-20,15)
   # lon2select = c(-15,50)
-
 
   nc <- nc_open(ncfile)
 
@@ -50,10 +49,13 @@ read.Trendy <- function(ncfile,
 
   values <- NULL ; i = 1
   while(is.null(values) & i <= length(variables.names)){
-    values <- tryCatch(ncvar_get(nc,variables.names[i]),
+    values <- tryCatch(ncvar_get(nc,variables.names[i],
+                                 start = c(min(select.lon),min(select.lat),min(select)),
+                                 count = c(length(select.lon),length(select.lat),length(select))),
                        error = function(e) NULL)
     i = i +1
   }
+
 
   nc_close(nc)
 
@@ -82,9 +84,9 @@ read.Trendy <- function(ncfile,
     select.lon <- 1:length(lons)
   }
 
-  times.selected <- times[select]
+  times.selected <- years[select]
 
-  cdf <- melt(values[select.lon,select.lat,select]) %>%
+  cdf <- melt(values) %>%
     rename(lon = Var1,
            lat = Var2,
            time = Var3) %>%

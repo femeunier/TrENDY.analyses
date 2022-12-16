@@ -21,7 +21,7 @@ model.names <- c("ISBA-CTRIP","CLASSIC","CLM5.0","DLEM","IBIS","ISAM",
                  "LPJ","LPX-Bern","ORCHIDEE-CNP","SDGVM","VISIT",
                  "YIBs")
 
-model.names <- c("ISBA-CTRIP")
+# model.names <- c("ISBA-CTRIP")
 
 model.dir <- rep("",length(model.names))
 scenarios <- c("S2")
