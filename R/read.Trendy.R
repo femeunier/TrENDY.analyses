@@ -7,18 +7,18 @@ read.Trendy <- function(ncfile,
                         lat2select =  NULL,
                         lon2select = NULL){
 
-  # library(ncdf4)
-  # library(lubridate)
-  # library(reshape2)
-  #
-  # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDY/VISIT_S2_cVeg.nc"
-  # lat.names = c("latitude","lat","lat_FULL")
-  # lon.names = c("longitude","lon","lon_FULL")
-  # time.names = c("time","time_counter")
-  # variables.names = c("cVeg")
-  # years2select  = c(1968,Inf)
-  # lat2select =  c(-20,15)
-  # lon2select = c(-15,50)
+  library(ncdf4)
+  library(lubridate)
+  library(reshape2)
+
+  ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDY/IBIS_S2_npp.nc"
+  lat.names = c("latitude","lat","lat_FULL")
+  lon.names = c("longitude","lon","lon_FULL")
+  time.names = c("time","time_counter")
+  variables.names = c("npp")
+  years2select  = c(1968,Inf)
+  lat2select =  c(-20,15)
+  lon2select = c(-15,50)
 
   nc <- nc_open(ncfile)
 
@@ -51,6 +51,8 @@ read.Trendy <- function(ncfile,
 
   if (nchar(unit.time[3]) == 4) {
     unit.time[3] <- paste0(unit.time[3],"/01/01")
+  } else if (nchar(unit.time[3]) == 7) {
+    unit.time[3] <- paste0(unit.time[3],"-01")
   }
 
 

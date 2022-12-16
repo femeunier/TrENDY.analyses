@@ -16,22 +16,22 @@ library(TrENDY.analyses)
 maindir <- "/data/gent/vo/000/gvo00074/felicien/TrENDY/"
 # maindir <- "/home/femeunier/Documents/projects/TrENDY.analyses/data/"
 
-model.names <- c("ISBA-CTRIP","CLASSIC","CLM5.0","DLEM","IBIS","ISAM",
+model.names <- c("CLASSIC","CLM5.0","DLEM","IBIS","ISAM","ISBA-CTRIP",
                  "JSBACH","JULES-ES","LPJ-GUESS",
-                 "LPJ","LPX-Bern","ORCHIDEE-CNP","SDGVM","VISIT",
-                 "YIBs")
+                 "LPJ","LPX-Bern","OCN","ORCHIDEE-CNP","ORCHIDEE",
+                 "ORCHIDEEv3","SDGVM","VISIT","YIBs")
 
 # model.names <- c("ISBA-CTRIP")
 
 model.dir <- rep("",length(model.names))
 scenarios <- c("S2")
-variables <- c("cVeg","cRoot")
+variables <- c("npp")
 
 ########################################################################
 # For reading
 variables.names <- list()
-variables.names[[1]] <- c("cVeg")
-variables.names[[2]] <- c("cRoot")
+variables.names[[1]] <- c("npp")
+# variables.names[[2]] <- c("cRoot")
 
 #######################################################################
 # For regridding
