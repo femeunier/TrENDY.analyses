@@ -17,7 +17,7 @@ maindir <- "/data/gent/vo/000/gvo00074/felicien/TrENDY/"
 # maindir <- "/home/femeunier/Documents/projects/TrENDY.analyses/data/"
 
 model.names <- c("CLASSIC","CLM5.0","DLEM","IBIS","ISAM","ISBA-CTRIP",
-                 "JSBACH","JULES-ES","LPJ-GUESS",
+                 "JSBACH","JULES-ES-1p0","LPJ-GUESS",
                  "LPJ","LPX-Bern","OCN","ORCHIDEE-CNP","ORCHIDEE",
                  "ORCHIDEEv3","SDGVM","VISIT","YIBs")
 
@@ -26,12 +26,15 @@ model.names <- c("CLASSIC","CLM5.0","DLEM","IBIS","ISAM","ISBA-CTRIP",
 model.dir <- rep("",length(model.names))
 scenarios <- c("S2")
 variables <- c("npp")
+# variables <- c("cVeg","cRoot")
 
 ########################################################################
 # For reading
 variables.names <- list()
-variables.names[[1]] <- c("npp")
+# variables.names[[1]] <- c("cVeg")
 # variables.names[[2]] <- c("cRoot")
+
+variables.names[[1]] <- c("npp","npp_nlim")
 
 #######################################################################
 # For regridding
@@ -67,7 +70,7 @@ for (imodel in seq(1,length(model.dir))){
       }
 
       cdf <- read.Trendy(ncfile,
-                         variables.names = cvariable,
+                         variables.names = variables.names[[ivariable]],
                          years2select = c(1968,Inf),
                          lat2select =  c(-20,15),
                          lon2select = c(-15,50))

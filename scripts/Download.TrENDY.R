@@ -19,20 +19,16 @@ system2("sshfs", paste0("trendy-v9@trendy.ex.ac.uk:/output ", localdir))  # pass
 # sshfs trendy-v9@trendy.ex.ac.uk:/output /data/gent/vo/000/gvo00074/felicien/TrENDY/localdir
 
 files2download <- list.files(localdir,
-                             pattern = "*cRoot.nc",
+                             pattern = "VISIT_S3_gpp.nc.gz",
                              recursive = TRUE)
 
 setwd(paste0(dir))
-dir.create(file.path(dir,"outputs"),
-           showWarnings = FALSE)
 
 for (ifile in seq(1,length(files2download))){
-
-  if (!file.exists(file.path(dir,"outputs",files2download[ifile]))){
+  if (!file.exists(file.path(dir,basename(files2download[ifile])))){
     system2('lftp',paste0('sftp://trendy-v9:gcb-2020@trendy.ex.ac.uk -e "get /output/',files2download[ifile],' ; exit"'))
     # print(paste('lftp',paste0('sftp://trendy-v9:gcb-2020@trendy.ex.ac.uk -e "get /output/',files2download[ifile],' ; exit"')))
   }
-
 }
 
 # cVeg.files <- list.files("/data/gent/vo/000/gvo00074/felicien/TrENDY/localdir",

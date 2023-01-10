@@ -7,9 +7,10 @@ library(plotbiomes)
 library(raster)
 library(ggplot2)
 
-years <- 2019
+years <- 1961:1990
 vars <- c("pre","tmp","tmin","tmax")
-dir <- "/home/femeunier/Documents/projects/TrENDY.analyses/data"
+# dir <- "/home/femeunier/Documents/projects/TrENDY.analyses/data"
+dir <- "/data/gent/vo/000/gvo00074/felicien/TrENDY/inputs"
 
 days2months <- c(31,28,31,30,31,30,
                  31,31,30,31,30,31)
@@ -125,6 +126,13 @@ for (cyear in years){
 saveRDS(df.all.monthly,
         "./outputs/CRU.JRA.RDS")
 
+stop()
+
+system2("scp",paste("hpc:/kyukon/data/gent/vo/000/gvo00074/felicien/R/outputs/CRU.JRA.RDS",
+                    "/home/femeunier/Documents/projects/TrENDY.analyses/outputs/"))
+
+df.all <- readRDS("/home/femeunier/Documents/projects/TrENDY.analyses/outputs/CRU.JRA.RDS")
+
 df.all.units <- df.all %>%
   mutate(pre = pre*4*365/10,
          tmp = tmp-273.15)
@@ -162,3 +170,6 @@ ggplot(data = world) +
   geom_sf(fill = NA) +
   labs(x = "",y = "", fill = "Biome") +
   theme_bw()
+
+
+# scp /home/femeunier/Documents/projects/TrENDY.analyses/scripts/define.biomes.R hpc:/data/gent/vo/000/gvo00074/felicien/R/
