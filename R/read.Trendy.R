@@ -15,7 +15,7 @@ read.Trendy <- function(ncfile,
   # lat.names = c("latitude","lat","lat_FULL")
   # lon.names = c("longitude","lon","lon_FULL")
   # time.names = c("time","time_counter")
-  # variables.names = c("npp")
+  # variables.names = c("cVeg")
   # years2select  = c(1968,Inf)
   # lat2select =  c(-20,15)
   # lon2select = c(-15,50)
@@ -55,9 +55,15 @@ read.Trendy <- function(ncfile,
     unit.time[3] <- paste0(unit.time[3],"-01")
   }
 
+  if (unit.time[3] == "AD"){
+    unit.time[3] <- "0001-01-01"
+    unit.time[c(4,5)] <- NA
+    years = times
+  } else {
+    years <- year(unit.time[3]) + (yday(unit.time[3]) -1)/365 +
+      hour(paste(unit.time[3],unit.time[4]))/24/365  + times * udunits2::ud.convert(1,unit.time[1],"days")/365  # approximate years
+  }
 
-  years <- year(unit.time[3]) + (yday(unit.time[3]) -1)/365 +
-    hour(paste(unit.time[3],unit.time[4]))/24/365  + times * udunits2::ud.convert(1,unit.time[1],"days")/365  # approximate years
   round.years <- floor(years)
 
   select <- which(round.years >= years2select[1],round.years <= years2select[2])
