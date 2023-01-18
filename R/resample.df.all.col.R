@@ -1,4 +1,7 @@
-resample.df.all.col <- function(bigdf,raster2resample,var.names = "value"){
+resample.df.all.col <- function(bigdf,
+                                raster2resample,
+                                var.names = "value",
+                                res = NULL){
 
   lat <- unique(as.vector(bigdf %>% pull(lat)))
   lon <- unique(as.vector(bigdf %>% pull(lon)))
@@ -25,7 +28,11 @@ resample.df.all.col <- function(bigdf,raster2resample,var.names = "value"){
 
       if (length(unique(diff(sort(unique(lat))))) > 1){
 
-        res <- mean(c(diff(sort(unique(lat))),diff(sort(unique(lon)))))
+
+        if (is.null(res)){
+          res <- mean(c(diff(sort(unique(lat))),diff(sort(unique(lon)))))
+        }
+
         dfr <- raster(SpatialPixelsDataFrame(points = cdf[c("lon","lat")],
                                              data = cdf[var.name],
                                              tolerance = res/10))
