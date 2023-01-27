@@ -61,6 +61,19 @@ read.Trendy <- function(ncfile,
 
   nc2 <- RNetCDF::open.nc(ncfile)
   tunits <- RNetCDF::att.get.nc(nc2, 'time','units')
+
+
+  tunits <- NULL ; i = 1
+
+  while(is.null(tunits) & i <= length(time.names)){
+    tunits <- tryCatch(suppressMessages(RNetCDF::att.get.nc(nc2, time.names[i],'units')),
+                       error = function(e) NULL)
+
+    i = i + 1
+  }
+
+  if (is.null(tunits)) tunits <- "Unknown"
+
   RNetCDF::close.nc(nc2)
 
   abs.times <- TrENDY.analyses::nc.get.abs.time.series(f = nc)
