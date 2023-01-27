@@ -127,9 +127,9 @@ read.Trendy <- function(ncfile,
            lat = lats[lat],
            year = years.selected[time],
            month = months.selected[time],
+           abs.time = abs.times.selected[time],
            time = times.selected[time],
            time.unit = as.character(tunits),
-           abs.time = abs.times.selected[time],
            ) %>%
     group_by(lat,lon) %>%
     # mutate(year =  round.years[select]) %>%
