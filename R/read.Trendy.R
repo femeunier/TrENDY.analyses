@@ -10,15 +10,15 @@ read.Trendy <- function(ncfile,
   # library(ncdf4)
   # library(lubridate)
   # library(reshape2)
-  #
-  # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv11//JULES_S2_cVeg.nc"
-  # lat.names = c("latitude","lat","lat_FULL")
-  # lon.names = c("longitude","lon","lon_FULL")
-  # time.names = c("time","time_counter")
-  # variables.names = c("cVeg")
-  # years2select  = c(1968,Inf)
-  # lat2select =  c(-20,15)
-  # lon2select = c(-15,50)
+
+  ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv11//CABLE-POP_S2_cVeg.nc"
+  lat.names = c("latitude","lat","lat_FULL")
+  lon.names = c("longitude","lon","lon_FULL")
+  time.names = c("time","time_counter")
+  variables.names = c("cVeg")
+  years2select  = c(1960,Inf)
+  lat2select =  c(-20,15)
+  lon2select = c(-15,50)
 
   nc <- nc_open(ncfile)
 
@@ -39,7 +39,7 @@ read.Trendy <- function(ncfile,
   lons[lons>180] <- lons[lons>180] -360
 
   # ncfilin <- ncdf4::nc_open(ncfile)
-  times <- ncdf4.helpers::nc.get.time.series(f = nc)
+  times <- TrENDY.analyses::nc.get.time.series(f = nc)
   # ncdf4::nc_close(ncfilin)
 
   years <- lubridate::year(times)
