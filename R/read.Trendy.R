@@ -37,37 +37,52 @@ read.Trendy <- function(ncfile,
   }
 
   lons[lons>180] <- lons[lons>180] -360
-  times <- NULL ; i = 1
-  while(is.null(times) & i <= length(time.names)){
-    times <- tryCatch(suppressMessages(ncvar_get(nc,time.names[i])),
-                      error = function(e) NULL)
 
-    if (!is.null(times)) unit.time <- strsplit(ncatt_get(nc,time.names[i],"units")[["value"]], "\\s+")[[1]]
+  # ncfilin <- ncdf4::nc_open(ncfile)
+  times <- ncdf4.helpers::nc.get.time.series(f = nc)
+  # ncdf4::nc_close(ncfilin)
 
-    i = i + 1
-  }
+  years <- lubridate::year(times)
+  months <- lubridate::month(times)
 
-  # Subset
+  # times <- NULL ; i = 1
+  #
+  # while(is.null(times) & i <= length(time.names)){
+  #   times <- tryCatch(suppressMessages(ncvar_get(nc,time.names[i])),
+  #                     error = function(e) NULL)
+  #
+  #   if (!is.null(times)) unit.time <- strsplit(ncatt_get(nc,time.names[i],"units")[["value"]], "\\s+")[[1]]
+  #
+  #   i = i + 1
+  # }
+  #
+  #
+  # tunits <- att.get.nc(nc, 'time','units')
 
-  if (nchar(unit.time[3]) == 4) {
-    unit.time[3] <- paste0(unit.time[3],"/01/01")
-  } else if (nchar(unit.time[3]) == 7) {
-    unit.time[3] <- paste0(unit.time[3],"-01")
-  }
+  # # Subset
+  #
+  # if (nchar(unit.time[3]) == 4) {
+  #   unit.time[3] <- paste0(unit.time[3],"/01/01")
+  # } else if (nchar(unit.time[3]) == 7) {
+  #   unit.time[3] <- paste0(unit.time[3],"-01")
+  # }
 
-  if (unit.time[3] == "AD"){
-    unit.time[3] <- "0001-01-01"
-    unit.time[c(4,5)] <- NA
-    years = times
-  } else {
-    years <- year(unit.time[3]) + (yday(unit.time[3]) -1)/365 +
-      hour(paste(unit.time[3],unit.time[4]))/24/365  + times * udunits2::ud.convert(1,unit.time[1],"days")/365  # approximate years
-  }
+  # if (unit.time[3] == "AD"){
+  #   unit.time[3] <- "0001-01-01"
+  #   unit.time[c(4,5)] <- NA
+  #   years = times
+  # } else {
+  #   years <- year(unit.time[3]) + (yday(unit.time[3]) -1)/365 +
+  #     hour(paste(unit.time[3],unit.time[4]))/24/365  + times * udunits2::ud.convert(1,unit.time[1],"days")/365  # approximate years
+  # }
 
   round.years <- floor(years)
 
   select <- which(round.years >= years2select[1],round.years <= years2select[2])
-  times.selected <- years[select]
+
+  times.selected <- times[select]
+  years.selected <- years[select]
+  months.selected <- months[select]
 
   if (!is.null(lat2select)){
     select.lat <- which(lats>=lat2select[1] & lats<=lat2select[2])
@@ -103,9 +118,12 @@ read.Trendy <- function(ncfile,
            time = Var3) %>%
     mutate(lon = lons[lon],
            lat = lats[lat],
-           time = times.selected[time]) %>%
+           time = times.selected[time],
+           year = years.selected[time],
+           month = months.selected[time]
+           ) %>%
     group_by(lat,lon) %>%
-    mutate(year =  round.years[select]) %>%
+    # mutate(year =  round.years[select]) %>%
     filter(!is.na(value))
 
   return(cdf)
