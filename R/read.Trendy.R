@@ -57,7 +57,13 @@ read.Trendy <- function(ncfile,
   # }
   #
   #
-  # tunits <- att.get.nc(nc, 'time','units')
+
+
+  nc2 <- RNetCDF::open.nc(ncfile)
+  tunits <- RNetCDF::att.get.nc(nc2, 'time','units')
+  RNetCDF::close.nc(nc2)
+
+  abs.times <- TrENDY.analyses::nc.get.abs.time.series(f = nc)
 
   # # Subset
   #
@@ -83,6 +89,7 @@ read.Trendy <- function(ncfile,
   times.selected <- times[select]
   years.selected <- years[select]
   months.selected <- months[select]
+  abs.times.selected <- abs.times[select]
 
   if (!is.null(lat2select)){
     select.lat <- which(lats>=lat2select[1] & lats<=lat2select[2])
@@ -121,6 +128,8 @@ read.Trendy <- function(ncfile,
            year = years.selected[time],
            month = months.selected[time],
            time = times.selected[time],
+           time.unit = as.character(tunits),
+           abs.time = abs.times.selected[time],
            ) %>%
     group_by(lat,lon) %>%
     # mutate(year =  round.years[select]) %>%
