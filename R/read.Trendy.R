@@ -11,14 +11,14 @@ read.Trendy <- function(ncfile,
   # library(lubridate)
   # library(reshape2)
 
-  ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv11//CABLE-POP_S2_cVeg.nc"
-  lat.names = c("latitude","lat","lat_FULL")
-  lon.names = c("longitude","lon","lon_FULL")
-  time.names = c("time","time_counter")
-  variables.names = c("cVeg")
-  years2select  = c(1960,Inf)
-  lat2select =  c(-20,15)
-  lon2select = c(-15,50)
+  # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv11//CABLE-POP_S2_npp.nc"
+  # lat.names = c("latitude","lat","lat_FULL")
+  # lon.names = c("longitude","lon","lon_FULL")
+  # time.names = c("time","time_counter")
+  # variables.names = c("npp")
+  # years2select  = c(1960,Inf)
+  # lat2select =  c(-20,15)
+  # lon2select = c(-15,50)
 
   nc <- nc_open(ncfile)
 
