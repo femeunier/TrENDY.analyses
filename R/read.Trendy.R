@@ -60,8 +60,6 @@ read.Trendy <- function(ncfile,
 
 
   nc2 <- RNetCDF::open.nc(ncfile)
-  tunits <- RNetCDF::att.get.nc(nc2, 'time','units')
-
 
   tunits <- NULL ; i = 1
 
