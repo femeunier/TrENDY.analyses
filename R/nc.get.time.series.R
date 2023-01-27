@@ -52,6 +52,13 @@ nc.get.time.series <- function (f, v, time.dim.name, correct.for.gregorian.julia
       time.origin.string <- paste0(time.split[3],"-01")
     }
 
+    if (time.split[3] == "AD"){
+      time.split[3] <- "0001-01-01"
+      time.split[c(4,5)] <- NA
+      time.origin.string <- paste(time.origin.string,
+                                  time.split[4:length(time.split)])
+    }
+
 
     cal <- ifelse(time.calendar.att$hasatt, time.calendar.att$value,
                   "gregorian")
