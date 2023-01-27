@@ -36,8 +36,7 @@ nc.get.time.series <- function (f, v, time.dim.name, correct.for.gregorian.julia
                                    cal = ifelse(time.calendar.att$hasatt, time.calendar.att$value,
                                                 "gregorian"), format = strsplit(time.split[3],
                                                                                 "\\.")[[1]][1]))
-  }
-  else {
+  } else {
     time.origin.string <- time.split[3]
     if (time.split[1] == "months")
       time.origin.string <- paste(time.origin.string,
@@ -45,6 +44,15 @@ nc.get.time.series <- function (f, v, time.dim.name, correct.for.gregorian.julia
     if (length(time.split) > 3)
       time.origin.string <- paste(time.origin.string,
                                   time.split[4:length(time.split)])
+
+
+    if (nchar(time.split[3]) == 4) {
+      time.origin.string <- paste0(time.split[3],"/01/01")
+    } else if (nchar(time.split[3]) == 7) {
+      time.origin.string <- paste0(time.split[3],"-01")
+    }
+
+
     cal <- ifelse(time.calendar.att$hasatt, time.calendar.att$value,
                   "gregorian")
     time.origin.string <- gsub("O", "0", time.origin.string)
