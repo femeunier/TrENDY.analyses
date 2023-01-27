@@ -3,7 +3,7 @@ nc.get.time.series <- function (f, v, time.dim.name, correct.for.gregorian.julia
 {
   if (missing(time.dim.name)) {
     if (missing(v))
-      dim.axes <- nc.get.dim.axes(f)
+      dim.axes <- ncdf4.helpers:::nc.get.dim.axes(f)
     else {
       if (!(v %in% names(f$var)))
         stop(paste("Variable '", v, "' not found in file.",
