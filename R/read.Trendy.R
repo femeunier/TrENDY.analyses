@@ -12,13 +12,13 @@ read.Trendy <- function(ncfile,
   # library(reshape2)
   # #
   # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv11//VISIT-NIES_S2_cVeg.nc"
-  # lat.names = c("latitude","lat","lat_FULL")
-  # lon.names = c("longitude","lon","lon_FULL")
-  # time.names = c("time","time_counter")
-  # variables.names = c("cVeg")
-  # years2select  = c(1960,Inf)
-  # lat2select =  c(-20,15)
-  # lon2select = c(-15,50)
+  lat.names = c("latitude","lat","lat_FULL")
+  lon.names = c("longitude","lon","lon_FULL")
+  time.names = c("time","time_counter")
+  variables.names = c("npp")
+  years2select  = c(1960,Inf)
+  lat2select =  c(-20,15)
+  lon2select = c(-15,50)
 
   nc <- nc_open(ncfile)
 
@@ -44,6 +44,7 @@ read.Trendy <- function(ncfile,
 
   years <- lubridate::year(times)
   months <- lubridate::month(times)
+
 
   # times <- NULL ; i = 1
   #
@@ -92,6 +93,10 @@ read.Trendy <- function(ncfile,
   #   years <- year(unit.time[3]) + (yday(unit.time[3]) -1)/365 +
   #     hour(paste(unit.time[3],unit.time[4]))/24/365  + times * udunits2::ud.convert(1,unit.time[1],"days")/365  # approximate years
   # }
+
+  if(years[1] != 1700){
+
+  }
 
   round.years <- floor(years)
 
