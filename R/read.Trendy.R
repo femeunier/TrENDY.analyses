@@ -87,11 +87,13 @@ read.Trendy <- function(ncfile,
   if (time.multiplier == 365/12*86400 & lubridate::day(time.origin) == 1){ # YIBs NPP hack
 
     warning(paste0("Correcting time for",ncfile))
+
     months <- rep(1:12,length(times)/12)
-    times <- as.POSIXctpaste0(years,"/",sprint,"/01")
+    times <- PCICt::as.PCICt.default(paste0(years,"/",sprintf("%02d",months),"/01"),
+                                     cal = "gregorian")
 
   }
-
+""
   # # Subset
   #
   # if (nchar(unit.time[3]) == 4) {
