@@ -11,14 +11,14 @@ read.Trendy <- function(ncfile,
   # library(lubridate)
   # library(reshape2)
   # #
-  ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv11/IBIS_S2_npp.nc"
-  lat.names = c("latitude","lat","lat_FULL")
-  lon.names = c("longitude","lon","lon_FULL")
-  time.names = c("time","time_counter")
-  variables.names = c("npp")
-  years2select  = c(1960,Inf)
-  lat2select =  c(-20,15)
-  lon2select = c(-15,50)
+  # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv11//ISBA-CTRIP_S2_npp.nc"
+  # lat.names = c("latitude","lat","lat_FULL")
+  # lon.names = c("longitude","lon","lon_FULL")
+  # time.names = c("time","time_counter")
+  # variables.names = c("npp")
+  # years2select  = c(1960,Inf)
+  # lat2select =  c(-20,15)
+  # lon2select = c(-15,50)
 
   nc <- nc_open(ncfile)
 
@@ -93,6 +93,15 @@ read.Trendy <- function(ncfile,
                                      cal = "gregorian")
 
   }
+
+  tmp.time <- years + (months - 1/2)*12
+
+  if (min(diff(tmp.time)) == 0){
+    months <- rep(1:12,length(times)/12)
+    times <- PCICt::as.PCICt.default(paste0(years,"/",sprintf("%02d",months),"/01"),
+                                     cal = "gregorian")
+  }
+
 ""
   # # Subset
   #
