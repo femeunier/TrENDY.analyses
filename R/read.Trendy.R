@@ -11,7 +11,7 @@ read.Trendy <- function(ncfile,
   # library(lubridate)
   # library(reshape2)
   # #
-  # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv11//ISBA-CTRIP_S2_npp.nc"
+  # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv11/IBIS_S2_npp.nc"
   # lat.names = c("latitude","lat","lat_FULL")
   # lon.names = c("longitude","lon","lon_FULL")
   # time.names = c("time","time_counter")
@@ -84,19 +84,21 @@ read.Trendy <- function(ncfile,
   time.multiplier <- TrENDY.analyses::nc.get.time.multiplier(time.res)
 
 
-  if (time.multiplier %in% c(86400,86400*365/12) & lubridate::day(time.origin) == 1){ # hack
+  # if (time.multiplier %in% c(86400,86400*365/12) & lubridate::day(time.origin) == 1){ # hack
+  #
+  #   warning(paste0("Correcting time for",ncfile))
+  #
+  #   months <- rep(1:12,length(times)/12)
+  #   times <- PCICt::as.PCICt.default(paste0(years,"/",sprintf("%02d",months),"/01"),
+  #                                    cal = "gregorian")
+  #
+  # }
+
+  check.time <- years + (months - 1/2)/12
+
+  if (min(diff(check.time)) == 0){
 
     warning(paste0("Correcting time for",ncfile))
-
-    months <- rep(1:12,length(times)/12)
-    times <- PCICt::as.PCICt.default(paste0(years,"/",sprintf("%02d",months),"/01"),
-                                     cal = "gregorian")
-
-  }
-
-  tmp.time <- years + (months - 1/2)*12
-
-  if (min(diff(tmp.time)) == 0){
     months <- rep(1:12,length(times)/12)
     times <- PCICt::as.PCICt.default(paste0(years,"/",sprintf("%02d",months),"/01"),
                                      cal = "gregorian")
