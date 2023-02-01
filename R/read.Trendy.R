@@ -11,14 +11,14 @@ read.Trendy <- function(ncfile,
   # library(lubridate)
   # library(reshape2)
   # #
-  # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv11/YIBs_S2_npp.nc"
-  # lat.names = c("latitude","lat","lat_FULL")
-  # lon.names = c("longitude","lon","lon_FULL")
-  # time.names = c("time","time_counter")
-  # variables.names = c("npp")
-  # years2select  = c(1960,Inf)
-  # lat2select =  c(-20,15)
-  # lon2select = c(-15,50)
+  ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv11/IBIS_S2_npp.nc"
+  lat.names = c("latitude","lat","lat_FULL")
+  lon.names = c("longitude","lon","lon_FULL")
+  time.names = c("time","time_counter")
+  variables.names = c("npp")
+  years2select  = c(1960,Inf)
+  lat2select =  c(-20,15)
+  lon2select = c(-15,50)
 
   nc <- nc_open(ncfile)
 
@@ -84,7 +84,7 @@ read.Trendy <- function(ncfile,
   time.multiplier <- TrENDY.analyses::nc.get.time.multiplier(time.res)
 
 
-  if (time.multiplier == 86400 & lubridate::day(time.origin) == 1){ # hack
+  if (time.multiplier %in% c(86400,86400*365/12) & lubridate::day(time.origin) == 1){ # hack
 
     warning(paste0("Correcting time for",ncfile))
 
