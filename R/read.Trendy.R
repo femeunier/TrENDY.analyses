@@ -85,6 +85,8 @@ read.Trendy <- function(ncfile,
 
 
   if (time.multiplier == 365/12*86400 & lubridate::day(time.origin) == 1){ # YIBs NPP hack
+
+    warning(paste0("Correcting time for",ncfile))
     months <- rep(1:12,length(times)/12)
     times <- years + (months -1/2)/12
 
