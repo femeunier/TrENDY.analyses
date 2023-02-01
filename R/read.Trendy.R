@@ -12,13 +12,13 @@ read.Trendy <- function(ncfile,
   # library(reshape2)
   # #
   # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv11/YIBs_S2_npp.nc"
-  lat.names = c("latitude","lat","lat_FULL")
-  lon.names = c("longitude","lon","lon_FULL")
-  time.names = c("time","time_counter")
-  variables.names = c("npp")
-  years2select  = c(1960,Inf)
-  lat2select =  c(-20,15)
-  lon2select = c(-15,50)
+  # lat.names = c("latitude","lat","lat_FULL")
+  # lon.names = c("longitude","lon","lon_FULL")
+  # time.names = c("time","time_counter")
+  # variables.names = c("npp")
+  # years2select  = c(1960,Inf)
+  # lat2select =  c(-20,15)
+  # lon2select = c(-15,50)
 
   nc <- nc_open(ncfile)
 
