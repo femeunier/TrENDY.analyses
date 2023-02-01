@@ -55,7 +55,7 @@ nc.get.time.series <- function (f, v, time.dim.name, correct.for.gregorian.julia
     if (time.split[3] == "AD"){
       time.split[3] <- "0001-01-01"
       time.split[c(4,5)] <- NA
-      time.origin.string <- time.split[3]
+      # time.origin.string <- time.split[3]
     }
 
 
