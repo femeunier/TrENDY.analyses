@@ -104,7 +104,7 @@ read.Trendy <- function(ncfile,
 
     warning(paste("Correcting time for",ncfile,"\r\n",
                   "Previous times:",times,"\r\n",
-                  "New times:",new.times))
+                  "New times:",new.times,"\r\n"))
 
     times <- new.times
   }
