@@ -11,14 +11,14 @@ read.Trendy <- function(ncfile,
   # library(lubridate)
   # library(reshape2)
   # #
-  # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv11//VISIT-NIES_S2_cVeg.nc"
-  lat.names = c("latitude","lat","lat_FULL")
-  lon.names = c("longitude","lon","lon_FULL")
-  time.names = c("time","time_counter")
-  variables.names = c("npp")
-  years2select  = c(1960,Inf)
-  lat2select =  c(-20,15)
-  lon2select = c(-15,50)
+  # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv11/YIBs_S2_npp.nc"
+  # lat.names = c("latitude","lat","lat_FULL")
+  # lon.names = c("longitude","lon","lon_FULL")
+  # time.names = c("time","time_counter")
+  # variables.names = c("npp")
+  # years2select  = c(1960,Inf)
+  # lat2select =  c(-20,15)
+  # lon2select = c(-15,50)
 
   nc <- nc_open(ncfile)
 
@@ -77,6 +77,19 @@ read.Trendy <- function(ncfile,
 
   abs.times <- TrENDY.analyses::nc.get.abs.time.series(f = nc)
 
+  time.origin <- nc.get.time.origin(f = nc)
+
+  time.split <- strsplit(nc$dim$time$units, " ")[[1]]
+  time.res <- time.split[1]
+  time.multiplier <- TrENDY.analyses::nc.get.time.multiplier(time.res)
+
+
+  if (time.multiplier == 365/12*86400 & lubridate::day(time.origin) == 1){ # YIBs NPP hack
+    months <- rep(1:12,length(times)/12)
+    times <- years + (months -1/2)/12
+
+  }
+
   # # Subset
   #
   # if (nchar(unit.time[3]) == 4) {
@@ -94,9 +107,6 @@ read.Trendy <- function(ncfile,
   #     hour(paste(unit.time[3],unit.time[4]))/24/365  + times * udunits2::ud.convert(1,unit.time[1],"days")/365  # approximate years
   # }
 
-  if(years[1] != 1700){
-
-  }
 
   round.years <- floor(years)
 
