@@ -88,7 +88,7 @@ read.Trendy <- function(ncfile,
 
     warning(paste0("Correcting time for",ncfile))
     months <- rep(1:12,length(times)/12)
-    times <- years + (months -1/2)/12
+    times <- as.POSIXctpaste0(years,"/",sprint,"/01")
 
   }
 
