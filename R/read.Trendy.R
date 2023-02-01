@@ -98,10 +98,15 @@ read.Trendy <- function(ncfile,
 
   if (min(diff(check.time)) == 0){
 
-    warning(paste0("Correcting time for",ncfile))
     months <- rep(1:12,length(times)/12)
-    times <- PCICt::as.PCICt.default(paste0(years,"/",sprintf("%02d",months),"/01"),
+    new.times <- PCICt::as.PCICt.default(paste0(years,"/",sprintf("%02d",months),"/01"),
                                      cal = "gregorian")
+
+    warning(paste("Correcting time for",ncfile,"\r\n",
+                  "Previous times:",times,"\r\n",
+                  "New times:",new.times))
+
+    times <- new.times
   }
 
 ""
