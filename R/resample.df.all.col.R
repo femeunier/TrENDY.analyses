@@ -11,14 +11,14 @@ resample.df.all.col <- function(bigdf,
   col.names <- colnames(bigdf)
   col2loop <- col.names[which(!(col.names %in% c("id","lon","lat",var.names)))]
 
-  cdfcol2loop <- (bigdf[,col2loop])
+  cdfcol2loop <- as.data.frame((bigdf[,col2loop]))
 
   other.vars <- cdfcol2loop %>% distinct()
 
   all.df <- data.frame()
 
   for (irow in seq(1,nrow(other.vars))){
-    tempdf <- suppressMessages(cbind(cdfcol2loop,id = bigdf[["id"]]) %>% inner_join(other.vars[irow,]))
+    tempdf <- suppressMessages(cbind(cdfcol2loop,id = bigdf[["id"]]) %>% inner_join(as.data.frame(other.vars %>% slice(irow))))
 
     cdf <- bigdf %>% dplyr::filter(id %in% (tempdf %>% pull(id)))
 
@@ -30,12 +30,30 @@ resample.df.all.col <- function(bigdf,
 
 
         if (is.null(res)){
-          res <- mean(c(diff(sort(unique(lat))),diff(sort(unique(lon)))))
+          res <- 1e-8
         }
 
-        dfr <- raster(SpatialPixelsDataFrame(points = cdf[c("lon","lat")],
-                                             data = cdf[var.name],
-                                             tolerance = res/10))
+        res.local <- res
+        error <- TRUE
+
+        while(error & res.local < 100){
+
+          dfr <- tryCatch(raster(suppressWarnings(SpatialPixelsDataFrame(points = cdf[c("lon","lat")],
+                                                        data = cdf[var.name],
+                                                        tolerance = res.local))),
+                          error = function(e) NULL)
+
+          if (is.null(dfr)) {
+            res.local = res.local*1.05
+          } else {
+            error <- FALSE
+          }
+
+        }
+
+        if (res.local > 100){
+          stop("Can't find a correct resolution")
+        }
 
       } else {
         dfr <- rasterFromXYZ(cdf[,c("lon","lat",var.name)])
@@ -57,7 +75,7 @@ resample.df.all.col <- function(bigdf,
     }
 
     all.df <- bind_rows(list(all.df,
-                             new.df %>% mutate(merging.col = 1) %>% left_join(other.vars[irow,] %>% mutate(merging.col = 1),
+                             new.df %>% mutate(merging.col = 1) %>% left_join(other.vars %>% slice(irow) %>% mutate(merging.col = 1),
                                                                               by = "merging.col") %>%
                                dplyr::select(-merging.col)
                              ))

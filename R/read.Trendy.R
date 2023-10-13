@@ -11,7 +11,7 @@ read.Trendy <- function(ncfile,
   # library(lubridate)
   # library(reshape2)
   # #
-  # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv11/IBIS_S2_npp.nc"
+  # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv11/CABLE-POP_S2_npp.nc"
   # lat.names = c("latitude","lat","lat_FULL")
   # lon.names = c("longitude","lon","lon_FULL")
   # time.names = c("time","time_counter")
@@ -34,6 +34,16 @@ read.Trendy <- function(ncfile,
     lons <- tryCatch(suppressMessages(ncvar_get(nc,lon.names[i])),
                      error = function(e) NULL)
     i = i +1
+  }
+
+  if (all(lats < 1e-6)){
+    delta_lat = 180/length(lats)
+    lats <- seq(-90 + delta_lat/2,90 - delta_lat/2,delta_lat)
+  }
+
+  if (all(lons < 1e-6)){
+    delta_lon = 360/length(lons)
+    lons <- seq(0 + delta_lon/2,360 - delta_lon/2,delta_lon)
   }
 
   lons[lons>180] <- lons[lons>180] -360
@@ -108,24 +118,6 @@ read.Trendy <- function(ncfile,
 
     times <- new.times
   }
-
-""
-  # # Subset
-  #
-  # if (nchar(unit.time[3]) == 4) {
-  #   unit.time[3] <- paste0(unit.time[3],"/01/01")
-  # } else if (nchar(unit.time[3]) == 7) {
-  #   unit.time[3] <- paste0(unit.time[3],"-01")
-  # }
-
-  # if (unit.time[3] == "AD"){
-  #   unit.time[3] <- "0001-01-01"
-  #   unit.time[c(4,5)] <- NA
-  #   years = times
-  # } else {
-  #   years <- year(unit.time[3]) + (yday(unit.time[3]) -1)/365 +
-  #     hour(paste(unit.time[3],unit.time[4]))/24/365  + times * udunits2::ud.convert(1,unit.time[1],"days")/365  # approximate years
-  # }
 
 
   round.years <- floor(years)
