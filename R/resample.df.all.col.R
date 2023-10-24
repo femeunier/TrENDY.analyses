@@ -18,7 +18,10 @@ resample.df.all.col <- function(bigdf,
   all.df <- data.frame()
 
   for (irow in seq(1,nrow(other.vars))){
-    tempdf <- suppressMessages(cbind(cdfcol2loop,id = bigdf[["id"]]) %>% inner_join(as.data.frame(other.vars %>% slice(irow))))
+
+    print(irow/nrow(other.vars))
+
+    tempdf <- suppressMessages(cbind(cdfcol2loop,id = bigdf[["id"]]) %>% inner_join(as.data.frame(other.vars %>% dplyr::slice(irow))))
 
     cdf <- bigdf %>% dplyr::filter(id %in% (tempdf %>% pull(id)))
 
@@ -29,7 +32,7 @@ resample.df.all.col <- function(bigdf,
       if (length(unique(diff(sort(unique(lat))))) > 1){
 
 
-        if (is.null(res)){
+        if (irow == 1 & is.null(res)){
           res <- 1e-8
         }
 
@@ -47,6 +50,7 @@ resample.df.all.col <- function(bigdf,
             res.local = res.local*1.05
           } else {
             error <- FALSE
+            res <- res.local
           }
 
         }
@@ -75,7 +79,7 @@ resample.df.all.col <- function(bigdf,
     }
 
     all.df <- bind_rows(list(all.df,
-                             new.df %>% mutate(merging.col = 1) %>% left_join(other.vars %>% slice(irow) %>% mutate(merging.col = 1),
+                             new.df %>% mutate(merging.col = 1) %>% left_join(other.vars %>% dplyr::slice(irow) %>% mutate(merging.col = 1),
                                                                               by = "merging.col") %>%
                                dplyr::select(-merging.col)
                              ))
