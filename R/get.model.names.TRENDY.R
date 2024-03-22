@@ -5,7 +5,7 @@ get.model.names.TRENDY <- function(version = "v11"){
                      "JSBACH","JULES","LPJ-GUESS",
                      "LPJ","LPX-Bern","OCN","ORCHIDEE",
                      "SDGVM","VISIT-NIES","VISIT","YIBs")  # v11
-  } else if (version == "v11"){
+  } else if (version == "v12"){
     model.names <- c("CABLEPOP","CARDAMOM","CLASSIC","CLM5.0",
                      "DLEM","ED","ELM","IBIS","ISAM","ISBACTRIP",
                      "JSBACH","JULES","LPJ-GUESS","LPJml","LPJwsl",
