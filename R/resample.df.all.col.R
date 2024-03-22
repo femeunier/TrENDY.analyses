@@ -63,7 +63,7 @@ resample.df.all.col <- function(bigdf,
         dfr <- rasterFromXYZ(cdf[,c("lon","lat",var.name)])
       }
 
-      dfr.rspld <- resample(dfr,raster2resample)
+      dfr.rspld <- raster::resample(dfr,raster2resample)
       dfr.rspld[is.na(raster2resample)] <- NA
 
       df.rspld <- raster::as.data.frame(dfr.rspld,
