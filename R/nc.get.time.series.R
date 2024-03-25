@@ -30,12 +30,13 @@ nc.get.time.series <- function (f, v, time.dim.name, correct.for.gregorian.julia
   time.split <- strsplit(f$dim$time$units, " ")[[1]]
 
   if (length(time.split) == 0){
-    ctemp <- ncatt_get(nc,"time","unit")[["value"]]
+    ctemp <- tryCatch(ncatt_get(f,"time","unit")[["value"]],
+                      error = function(err){NULL})
 
-    if (ctemp == 0){
+    if (is.null(ctemp) | ctemp == 0){
       time.split = strsplit("months since 2003-01", " ")[[1]]
     } else {
-    time.split <- strsplit(ctemp, " ")[[1]]
+      time.split <- strsplit(ctemp, " ")[[1]]
     }
   }
 
