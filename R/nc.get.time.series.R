@@ -30,7 +30,7 @@ nc.get.time.series <- function (f, v, time.dim.name, correct.for.gregorian.julia
   time.split <- strsplit(f$dim$time$units, " ")[[1]]
 
   if (length(time.split) == 0){
-    if (length(f$dim$time$vals) > 1000){
+    if (length(f$dim$time$vals) < 1000){
       time.split = strsplit("months since 2003-01", " ")[[1]]    # DLEM
     } else {
       time.split = strsplit("months since 1700-01", " ")[[1]]    # CARDAMOM
