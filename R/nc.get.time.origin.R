@@ -27,6 +27,11 @@ nc.get.time.origin <- function (f, v, time.dim.name, correct.for.gregorian.julia
   }
   time.units <- f$dim$time$units
   time.split <- strsplit(f$dim$time$units, " ")[[1]]
+
+  if (length(time.split) == 0){
+    time.split = strsplit("months since 2003-01", " ")[[1]]
+  }
+
   time.res <- time.split[1]
   time.calendar.att <- ncdf4::ncatt_get(f, time.dim.name,
                                         "calendar")
