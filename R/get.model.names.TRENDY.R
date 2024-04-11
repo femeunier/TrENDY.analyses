@@ -10,6 +10,8 @@ get.model.names.TRENDY <- function(version = "v11"){
                      "DLEM","EDv3","E3SM","IBIS","ISAM","ISBA-CTRIP",
                      "JSBACH","JULES","LPJ-GUESS","LPJmL","LPJwsl",
                      "LPX-Bern","OCN","ORCHIDEE","SDGVM","VISIT","YIBs")  # v12
+  } else if (version == "Example"){
+    model.names <- c("Example")
   } else {
     model.names <- c("CLASSIC","CLM5.0","DLEM","IBIS","ISAM","ISBA-CTRIP",
                      "JSBACH","JULES-ES-1p0","LPJ-GUESS",

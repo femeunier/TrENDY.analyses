@@ -1,14 +1,11 @@
 rm(list = ls())
 
-# install.packages(c("ncdf4","reshape2","lubridate","ggplot2","tidyr","RColorBrewer"))
-
 library(ncdf4)
 library(reshape2)
 library(dplyr)
 library(lubridate)
 library(ggplot2)
 library(tidyr)
-# library(YGB)
 library(raster)
 library(RColorBrewer)
 library(TrENDY.analyses)
@@ -16,10 +13,11 @@ library(TrENDY.analyses)
 maindir <- "/data/gent/vo/000/gvo00074/felicien/TrENDYv11/"
 
 model.names <- get.model.names.TRENDY(version = "v11")
+# model.names <- c("JULES","ISAM","CLM5.0")
+# model.names <- c("ISAM")
 
 model.dir <- rep("",length(model.names))
 scenarios <- c("S2")
-# variables <- c("npp")
 variables <- c("cVeg","cRoot")
 
 ########################################################################
@@ -28,12 +26,14 @@ variables.names <- list()
 variables.names[[1]] <- c("cVeg")
 variables.names[[2]] <- c("cRoot")
 
-# variables.names[[1]] <- c("npp","npp_nlim")
-
 #######################################################################
 # For regridding
 biome <- readRDS("./outputs/biome.RDS")
 biome.rst <- rasterFromXYZ(biome[,c("lon","lat","tmp")])
+
+e <- as(extent(-180, 180, -90, 90), 'SpatialPolygons')
+crs(e) <- "+proj=longlat +datum=WGS84 +no_defs"
+biome.rst.crop <- crop(biome.rst, e)
 
 #######################################################################
 
@@ -65,13 +65,21 @@ for (imodel in seq(1,length(model.dir))){
 
       cdf <- read.Trendy(ncfile,
                          variables.names = variables.names[[ivariable]],
-                         years2select = c(1968,Inf),
-                         lat2select =  c(-20,15),
-                         lon2select = c(-15,50))
+                         years2select = c(2000,Inf),
+                         lat2select =  NULL,
+                         lon2select = NULL)
+
+      print(paste(min(cdf$time),"-",max(cdf$time)))
 
       saveRDS(cdf,
-              paste0("./outputs/Trendy",cmodel,".",cscenario,".",cvariable,"_centralAfrica_v11.RDS"))
+              paste0("./outputs/Trendy.",cmodel,".",cscenario,".",cvariable,".Global.latest.v11.RDS"))
 
+      # cdf.rspld <- resample.df.all.col(bigdf = cdf,
+      #                                  raster2resample = biome.rst.crop,
+      #                                  var.names = "value",
+      #                                  res = 1)
+      # saveRDS(cdf.rspld,
+      #         paste0("./outputs/Trendy.",cmodel,".",cscenario,".",cvariable,"_pantropical_v11_rspld.RDS"))
 
 
       # all.df <- bind_rows(list(all.df,

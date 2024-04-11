@@ -9,14 +9,15 @@ library(stringr)
 #   system2("rm",paste("-rf",localdir))
 # }
 # sshfs trendy-v9@trendy.ex.ac.uk:/input /data/gent/vo/000/gvo00074/felicien/TrENDY/localdir
+# Password: gcb-2020
 
 dir <- "/data/gent/vo/000/gvo00074/felicien/TrENDY/"
 opdir <- "/data/gent/vo/000/gvo00074/felicien/TrENDY/inputs/"
 localdir <- file.path(dir,"localdir")
 
 
-folders <- c("tmin","tmp","tmax","pre")
-folders <- c("tmp")
+folders <- c("pre","tmp","tmin","tmax",
+             "dlwrf","dswrf","spfh")
 
 # dir.create(localdir,
 #            showWarnings = FALSE)
@@ -31,8 +32,7 @@ for (ifolder in seq(1,length(folders))){
                                recursive = TRUE)
   years <- as.numeric(unlist(lapply(str_split(files,pattern="\\."),"[[",6)))
 
-  files2download <- files[years == 1987]
-
+  files2download <- files[years %in% c(1900:1954)]
 
 
   for (ifile in seq(1,length(files2download))){

@@ -31,9 +31,29 @@ ggplot(data = world) +
 
 #######################################################################
 
-# Test 1 with NPP
-all.df <- readRDS("./outputs/Trendy.global.npp.v11.RDS") %>%
-  dplyr::filter(!(model %in% c("LPJ","OCN","VISIT"))) # Model with not everything
+# system2("rsync",
+#         paste("hpc:/data/gent/vo/000/gvo00074/felicien/R/outputs/Trendy.global.evapotrans.v11.RDS",
+#               "./outputs/"))
+
+# Test 2 with ET
+all.df.ET <- readRDS("./outputs/Trendy.global.evapotrans.v11.RDS") %>%
+  dplyr::filter((model %in% c("CABLE-POP","CLASSIC","CLM5.0",
+                              "DLEM","IBIS","JSBACH",
+                              "JULES","LPJ-GUESS","ORCHIDEE",
+                              "SDGVM","VISIT-NIES"))) # Model with everything
+
+all.df.NPP <- readRDS("./outputs/Trendy.global.npp.v11.RDS") %>%
+  dplyr::filter(model %in% all.df.ET[["model"]])
+
+all.df <- all.df.NPP %>%
+  dplyr::select(-variable) %>%
+  rename(NPP = value) %>%
+  left_join(all.df.ET %>%
+              dplyr::select(-variable) %>%
+              rename(ET = value),
+            by = c("lat","lon","model","scenario")) %>%
+  mutate(value = NPP/ET) %>%
+  dplyr::select(-c(NPP,ET))
 
 models <- unique(all.df$model)
 
@@ -45,7 +65,7 @@ for (cmodel in models){
                                  resample.df.all.col(bigdf = all.df %>% filter(model == cmodel),
                                                      raster2resample = biome.rst,
                                                      var.names = "value") %>% mutate(model = cmodel)
-                                 ))
+  ))
 }
 
 
@@ -57,32 +77,11 @@ cdf.biome <- all.df.rspld %>% left_join(biome,
 
 ggplot() +
   geom_density(data = all.df %>% filter(!is.na(value),
-                                        model == "LPJ-GUESS"),
+                                        value != 0.),
                aes(x = value, fill = scenario), alpha = 0.2, color = NA) +
-  geom_density(data = all.df.rspld %>% filter(!is.na(value),
-                                              model == "LPJ-GUESS"),
+  geom_density(data = all.df.rspld %>% filter(!is.na(value)),
                aes(x = value, color = scenario), alpha = 0.5, fill = NA) +
   facet_wrap(~ model, scales = "free") +
-  theme_bw()
-
-# # Weird model: LPJ-GUESS?
-test.model <- "LPJ-GUESS"
-compare.df <- bind_rows(list(all.df %>%
-                               filter(model == test.model) %>%
-                               mutate(resampling = "before"),
-                             all.df.rspld %>%
-                               filter(model == test.model) %>%
-                               mutate(resampling = "after")))
-
-
-ggplot(data = world) +
-  geom_raster(data = compare.df,
-            aes(x = lon, y = lat,
-                fill = value),na.rm = TRUE, alpha = 1) +
-  geom_sf(fill = NA) +
-  scale_fill_gradient(low = "white",high = "darkgreen",na.value = "transparent") +
-  labs(x = "",y = "") +
-  facet_grid(resampling ~ scenario) +
   theme_bw()
 
 
@@ -101,19 +100,18 @@ cdf.biome.wide.filter <- cdf.biome.wide %>%
               group_by(model,biome) %>%
               summarise(mS0 = mean(S0),
                         .groups = "keep"),
-            by = c("model","biome")) %>%
-  dplyr::filter(S0 > (1e-3*mS0))
+            by = c("model","biome"))
 
 ggplot(data = cdf.biome.wide.filter %>%
          dplyr::filter(!is.na(biome))) +
   geom_boxplot(aes(x = as.factor(biome),
-                   y = S1*86400*365,
+                   y = S1,
                    fill = model),outlier.shape = NA) +
   theme_bw() +
   labs(x = "",
-       y = "NPP [kgC/m²/yr] \r\n (historical simulation)",
+       y = "WUE",
        fill = "Model") +
-  # scale_y_continuous(limits = c(0,1.25e-8)) +
+  scale_y_continuous(limits = c(0,0.005)) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
         legend.position = c(0.1,0.78)) +
   guides(fill=guide_legend(ncol=2))
@@ -122,15 +120,15 @@ ggplot(data = cdf.biome.wide.filter %>%
 ggplot(data = cdf.biome.wide.filter %>%
          dplyr::filter(!is.na(biome))) +
   geom_boxplot(aes(x = as.factor(biome),
-                   y = diff*86400*365,
+                   y = diff,
                    fill = model),outlier.shape = NA) +
   theme_bw() +
   labs(x = "",
-       y = "NPP difference [kgC/m²/yr] \r\n (hist - cCO2)",
+       y = "WUE change (S1 - S0)",
        fill = "Model") +
-  scale_y_continuous(limits = c(-1,2.5)*1e-8*86400*365) +
+  scale_y_continuous(limits = c(-0.00025,0.001)) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1),
-        legend.position = c(0.1,0.78)) +
+        legend.position = c(0.3,0.8)) +
   geom_hline(yintercept = 0, linetype = 2) +
   guides(fill=guide_legend(ncol=2))
 
@@ -145,18 +143,18 @@ Trendy.wide.sum <-
   mutate(tas.cat = round((1/delta_t)*tmp)/(1/delta_t),
          pr.cat = round(pre/delta_pr)*delta_pr) %>%
   group_by(model,tas.cat,pr.cat) %>%
-  summarise(diff_npp.m = mean(diff,na.rm = TRUE),
-            diff_npp.rel.m = 100*mean(diff/S0,na.rm = TRUE),
-            lnRR_npp.m = mean(lnRR,na.rm = TRUE),
+  summarise(diff_ET.m = mean(diff,na.rm = TRUE),
+            diff_ET.rel.m = 100*mean(diff/S0,na.rm = TRUE),
+            lnRR_ET.m = mean(lnRR,na.rm = TRUE),
             .groups = "keep") %>%
-  mutate(diff_npp.rel.m.bnd = case_when(diff_npp.rel.m > 100 ~ 100,
-                                        diff_npp.rel.m < -100 ~ -100,
-                                        TRUE ~ diff_npp.rel.m))
+  mutate(diff_ET.rel.m.bnd = case_when(diff_ET.rel.m > 100 ~ 100,
+                                       diff_ET.rel.m < -100 ~ -100,
+                                       TRUE ~ diff_ET.rel.m))
 
 ggplot() +
   geom_tile(data = Trendy.wide.sum,
             aes(x = tas.cat, y = pr.cat,
-                fill = diff_npp.m),na.rm = TRUE, alpha = 1) +
+                fill = diff_ET.m),na.rm = TRUE, alpha = 1) +
   labs(x = "",y = "") +
   facet_wrap(~ model, scales = "free") +
   geom_polygon(data = Whittaker_biomes,
@@ -170,7 +168,7 @@ ggplot() +
                         .groups = "keep"),
             aes(x = temp_c, y = precp_cm, label = biome),
             size = 3.5)  +
-  labs(x = "MAT (°C)",y = "MAP (cm)", fill = "NPP difference \r\n (hist - cCO2) \r\n [kg/m²/yr]") +
+  labs(x = "MAT (°C)",y = "MAP (cm)", fill = "WUE difference \r\n (hist - cCO2) ") +
   theme_bw()
 
 tas.cat <- seq(min(Trendy.wide.sum$tas.cat),
@@ -184,12 +182,12 @@ df.grid <- expand.grid(tas.cat, pr.cat, models) %>%
          pr.cat = Var2,
          model = Var3) %>%
   left_join(
-    Trendy.wide.sum %>% dplyr::select(tas.cat, pr.cat, model, lnRR_npp.m,diff_npp.m),
+    Trendy.wide.sum %>% dplyr::select(tas.cat, pr.cat, model, lnRR_ET.m,diff_ET.m),
     by = c("tas.cat", "pr.cat", "model"))
 
 # ggplot() +
 #   geom_contour_filled(data = df.grid,
-#                       aes(x = tas.cat, y = pr.cat, z= diff_npp.m)) +
+#                       aes(x = tas.cat, y = pr.cat, z= diff_ET.m)) +
 #   # scale_fill_distiller(palette = "Spectral", direction = -1) +
 #   facet_wrap(~ model, scales = "free") +
 #   geom_polygon(data = Whittaker_biomes,
@@ -229,12 +227,12 @@ for (cmodel in models){
   print(cmodel)
 
   rst.large <- rasterFromXYZ(df.grid %>% filter(model == cmodel,
-                                                !is.na(lnRR_npp.m)) %>%
-                               dplyr::select(tas.cat,pr.cat,lnRR_npp.m))
+                                                !is.na(lnRR_ET.m)) %>%
+                               dplyr::select(tas.cat,pr.cat,lnRR_ET.m))
 
   rst.large2 <- rasterFromXYZ(df.grid %>% filter(model == cmodel,
-                                                !is.na(diff_npp.m)) %>%
-                               dplyr::select(tas.cat,pr.cat,diff_npp.m))
+                                                 !is.na(diff_ET.m)) %>%
+                                dplyr::select(tas.cat,pr.cat,diff_ET.m))
 
   rst.rspld <- resample(rst.large,rst.small,method = "bilinear")
   rst.rspld2 <- resample(rst.large2,rst.small,method = "bilinear")
@@ -295,7 +293,7 @@ Whittaker_biomes.text <- Whittaker_biomes %>% group_by(biome) %>%
 
 ggplot() +
   geom_contour_filled(data = df.perfect,
-                      aes(x = temp_c, y = precp_cm, z= diff_npp.m),
+                      aes(x = temp_c, y = precp_cm, z= diff_ET.m),
                       alpha = 0.4,
                       bins = 9) +
   geom_polygon(data = Whittaker_biomes,
@@ -305,22 +303,22 @@ ggplot() +
   geom_text(data = Whittaker_biomes.text,
             aes(x = temp_c, y = precp_cm, label = biome),
             size = 3.5)  +
-  scale_fill_manual(values = brewer.pal(9, "Greens")) +
+  scale_fill_manual(values = brewer.pal(9, "RdBu")) +
   labs(x = "Temperature (°C)",
        y = "Precipitation (cm)",
-       fill = "NPP difference") +
+       fill = "Difference WUE") +
   facet_wrap(~ model) +
   theme_bw() +
-  theme(legend.position = c(0.08,0.75))
+  theme(legend.position = c(0.9,0.15))
 
 
 df.perfect.sum <- df.perfect %>%
   group_by(temp_c,precp_cm,biome.id) %>%
-  summarise(lnRR_npp.m.m = mean(lnRR_npp.m,na.rm = TRUE),
-            lnRR_npp.m.CV = 100*sd(lnRR_npp.m,na.rm = TRUE)/abs(mean(lnRR_npp.m,na.rm = TRUE)),
-            diff_npp.m.CV = 100*sd(diff_npp.m,na.rm = TRUE)/abs(mean(diff_npp.m,na.rm = TRUE)),
-            diff_npp.m.sd = sd(diff_npp.m,na.rm = TRUE),
-            diff_npp.m.m = mean(diff_npp.m,na.rm = TRUE),
+  summarise(lnRR_ET.m.m = mean(lnRR_ET.m,na.rm = TRUE),
+            lnRR_ET.m.CV = 100*sd(lnRR_ET.m,na.rm = TRUE)/abs(mean(lnRR_ET.m,na.rm = TRUE)),
+            diff_ET.m.CV = 100*sd(diff_ET.m,na.rm = TRUE)/abs(mean(diff_ET.m,na.rm = TRUE)),
+            diff_ET.m.sd = sd(diff_ET.m,na.rm = TRUE),
+            diff_ET.m.m = mean(diff_ET.m,na.rm = TRUE),
             .groups = "keep")
 
 # df.perfect %>% filter(temp_c == temp_c[1],
@@ -329,7 +327,7 @@ df.perfect.sum <- df.perfect %>%
 
 ggplot() +
   geom_contour_filled(data = df.perfect.sum,
-                      aes(x = temp_c, y = precp_cm, z= diff_npp.m.m*86400*365),
+                      aes(x = temp_c, y = precp_cm, z= diff_ET.m.m),
                       alpha = 0.4,
                       bins = 9) +
   geom_polygon(data = Whittaker_biomes,
@@ -339,10 +337,11 @@ ggplot() +
   geom_text(data = Whittaker_biomes.text,
             aes(x = temp_c, y = precp_cm, label = biome),
             size = 3.5)  +
-  scale_fill_manual(values = brewer.pal(9, "Greens")) +
+  scale_fill_manual(values = brewer.pal(10, "RdBu")) +
+  # scale_fill_gradient2()
   labs(x = "Temperature (°C)",
        y = "Precipitation (cm)",
-       fill = "Mean difference") +
+       fill = "Mean ET difference") +
   theme_bw() +
   theme(legend.position = c(0.08,0.75),
         axis.line = element_line(colour = "black"),
@@ -351,12 +350,9 @@ ggplot() +
         panel.border = element_blank(),
         panel.background = element_blank())
 
-ggsave(plot = last_plot(),filename = "./Figures/Mean.png",
-       dpi = 300,unit = "cm",width = 25,height = 14)
-
 ggplot() +
   geom_contour_filled(data = df.perfect.sum,
-                      aes(x = temp_c, y = precp_cm, z= diff_npp.m.sd*86400*365),
+                      aes(x = temp_c, y = precp_cm, z= diff_ET.m.sd),
                       alpha = 0.4,
                       bins = 9) +
   geom_polygon(data = Whittaker_biomes,
@@ -378,5 +374,3 @@ ggplot() +
         panel.border = element_blank(),
         panel.background = element_blank())
 
-ggsave(plot = last_plot(),filename = "./Figures/CV_nolegend.png",
-       dpi = 300,unit = "cm",width = 25,height = 14)
