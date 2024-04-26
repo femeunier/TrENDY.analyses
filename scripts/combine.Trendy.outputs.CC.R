@@ -11,15 +11,9 @@ library(zoo)
 #               "./outputs/"))
 
 model.names <- get.model.names.TRENDY(version = "v11")
-# model.names <- c("IBIS")
-# scenarios <- c("S3")
-# variables <- c("nbp")
-# op.type = "monthly"
-# average = FALSE
-
 scenarios <- c("S2")
 variables <- c("gpp","npp","rh","nbp")
-lat.min = -25 ; lat.max = 25 ; year.min = 1901
+lat.min = -35 ; lat.max = 35 ; year.min = 1901
 op.type = "monthly"
 average = FALSE
 
@@ -30,7 +24,7 @@ for (cmodel in model.names){
 
   print(cmodel)
 
-  OPfile <- paste0("./outputs/Trendy.",cmodel,".",scenarios,".CC.pantropical.v11.RDS")
+  OPfile <- paste0("./outputs/Trendy.",cmodel,".",scenarios,".CC.centralAfrica.v11.RDS")
   # if (file.exists(OPfile)) next()
 
   cdf <- df.model <- data.frame()
@@ -46,7 +40,7 @@ for (cmodel in model.names){
 
       # op.file <- paste0("./outputs/Trendy.",cmodel,".",cscenario,".",cvariable,"_v11.RDS")
       # op.file <- paste0("./outputs/Trendy.",cmodel,".",cscenario,".",cvariable,".rspld_v11.RDS")
-      op.file <- paste0("./outputs/Trendy.",cmodel,".",cscenario,".",cvariable,".pantropical.v11.RDS")
+      op.file <- paste0("./outputs/Trendy.",cmodel,".",cscenario,".",cvariable,".centralAfrica.v11.RDS")
 
       if (!file.exists(op.file)) {
         warning(paste0("could not find file: ",op.file))

@@ -15,8 +15,8 @@ maindir <- "/data/gent/vo/000/gvo00074/felicien/TrENDYv11/"
 model.names <- get.model.names.TRENDY(version = "v11")
 
 model.dir <- rep("",length(model.names))
-scenarios <- c("S2")
-variables <- c("gpp","npp","rh")
+scenarios <- c("S2","S3")
+variables <- c("gpp","npp","rh","nbp")
 
 ########################################################################
 # For reading
@@ -24,6 +24,7 @@ variables.names <- list()
 variables.names[[1]] <- c("gpp","gpp_nlim")
 variables.names[[2]] <- c("npp","npp_nlim")
 variables.names[[3]] <- c("rh")
+variables.names[[4]] <- c("nbp")
 
 #######################################################################
 # For regridding
@@ -78,15 +79,15 @@ for (imodel in seq(1,length(model.dir))){
       #                    lat2select =  c(-25,20),
       #                    lon2select = c(-80,-35))
 
-      op <- paste0("./outputs/Trendy.",cmodel,".",cscenario,".",cvariable,".global.v11.RDS")
+      op <- paste0("./outputs/Trendy.",cmodel,".",cscenario,".",cvariable,".centralAfrica.v11.RDS")
 
       #if (file.exists(op)) next()
 
       cdf <- read.Trendy(ncfile,
                          variables.names = variables.names[[ivariable]],
-                         years2select = c(-Inf,Inf),
-                         lat2select =  c(-90,90),
-                         lon2select = NULL)
+                         years2select = c(2000,Inf),
+                         lat2select =  c(-35,35),
+                         lon2select = c(-30,60))
 
       print(paste(min(cdf$time),"-",max(cdf$time)))
 

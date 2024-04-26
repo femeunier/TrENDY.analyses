@@ -20,11 +20,11 @@ localdir <- file.path(dir,"localdir",sp.folder)
 # system2("sshfs", paste0("trendy-v9@trendy.ex.ac.uk:/output ", localdir))  # password = gcb-2020 # sshfs trendy-v9@trendy.ex.ac.uk:/output /data/gent/vo/000/gvo00074/felicien/TrENDY/localdir
 
 files2download <- c(list.files(file.path(localdir),
-                               pattern = "*_nbp.nc*",
+                               pattern = "*_cVeg.nc*",
                                recursive = TRUE))
 
 files2download <- file.path(sp.folder,
-                            files2download[grepl("S2",files2download)])
+                            files2download[grepl("S3",files2download)])
 
 setwd(paste0(dir))
 

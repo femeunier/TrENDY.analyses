@@ -1,7 +1,8 @@
 resample.df.all.col <- function(bigdf,
                                 raster2resample,
                                 var.names = "value",
-                                res = NULL){
+                                res = NULL,
+                                verbose = TRUE){
 
   lat <- unique(as.vector(bigdf %>% pull(lat)))
   lon <- unique(as.vector(bigdf %>% pull(lon)))
@@ -19,7 +20,7 @@ resample.df.all.col <- function(bigdf,
 
   for (irow in seq(1,nrow(other.vars))){
 
-    print(irow/nrow(other.vars))
+    if (verbose) print(irow/nrow(other.vars))
 
     tempdf <- suppressMessages(cbind(cdfcol2loop,id = bigdf[["id"]]) %>% inner_join(as.data.frame(other.vars %>% dplyr::slice(irow))))
 
