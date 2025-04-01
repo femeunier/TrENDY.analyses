@@ -52,10 +52,11 @@ read.Trendy <- function(ncfile,
 
   # ncdf4::nc_close(ncfilin)
 
+  times <- TrENDY.analyses::nc.get.time.series(f = nc)
+
   years <- lubridate::year(times)
   months <- lubridate::month(times)
 
-  times <- TrENDY.analyses::nc.get.time.series(f = nc)
   if (all(is.na(times))){
     A <- 11/12+ncvar_get(nc,"time")/12
     years <- floor(A)
