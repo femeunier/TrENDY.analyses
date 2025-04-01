@@ -8,7 +8,7 @@ library(TrENDY.analyses)
 #         paste("-avz","hpc:/kyukon/data/gent/vo/000/gvo00074/felicien/R/outputs/*pantropical.v11.RDS",
 #               "./outputs/"))
 
-model.names <- get.model.names.TRENDY(version = "v11")
+model.names <- get.model.names.TRENDY(version = "v13")
 
 # scenarios <- c("S3")
 # variables <- c("nbp")
@@ -16,7 +16,7 @@ model.names <- get.model.names.TRENDY(version = "v11")
 # average = FALSE
 
 scenarios <- c("S2")
-variables <- c("nbp")
+variables <- c("gpp")
 op.type = "monthly"
 average = FALSE
 

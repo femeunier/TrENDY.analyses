@@ -10,7 +10,12 @@ get.model.names.TRENDY <- function(version = "v11"){
                      "DLEM","EDv3","E3SM","IBIS","ISAM","ISBA-CTRIP",
                      "JSBACH","JULES","LPJ-GUESS","LPJmL","LPJwsl",
                      "LPX-Bern","OCN","ORCHIDEE","SDGVM","VISIT","YIBs")  # v12
-  } else if (version == "Example"){
+  } else if (version == "v13"){
+    model.names <- c("CABLE-POP","CARDAMOM","CLASSIC","CLM6.0",
+                     "DLEM","EDv3","E3SM","IBIS","iMAPLE",,"ISAM","ISBA-CTRIP",
+                     "JSBACH","JULES","LPJ-GUESS","LPJmL","LPJwsl",
+                     "LPX-Bern","OCN","ORCHIDEE","SDGVM","VISIT","visit-ut")  # v12
+ } else if (version == "Example"){
     model.names <- c("Example")
   } else {
     model.names <- c("CLASSIC","CLM5.0","DLEM","IBIS","ISAM","ISBA-CTRIP",

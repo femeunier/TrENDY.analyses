@@ -170,104 +170,102 @@ for (cmodel in model.names){
   # write_feather(df.model.wide,
   #               OPfile)
   saveRDS(df.model.wide,
-          paste0("./outputs/Trendy.Global",cmodel,".cAGB.v11.recent.RDS"))
+          paste0("./outputs/Trendy.Global.",scenario,".",cmodel,".cAGB.v11.recent.RDS"))
 
   df.all <- bind_rows(df.all,
                       df.model)
 
-
-
   compt.model <- compt.model + 1
 }
 
-saveRDS(df.all,
-        "/home/femeunier/Documents/projects/TrENDY.analyses/outputs/Trendy.pantropical.S2.cAGB.v11.recent.RDS")
+# saveRDS(df.all,
+#         "/home/femeunier/Documents/projects/TrENDY.analyses/outputs/Trendy.Global.S2.cAGB.v11.recent.RDS")
 
 df.model %>%
-  group_by(scenario,model) %>%
-  summarise(Nyear = length(unique(year)),
-            Ndata.per.year = sum(year == year[1])/1e6)
-
-df.model.select <- df.model %>%
-  group_by(model) %>%
-  filter(lat == lat[1],lon == lon[1])
-
-ggplot(data = df.model.select) +
-  geom_point(aes(x = year, y = value, color = model)) +
-  facet_grid(variable ~ scenario) +
-  theme_bw()
-
-# df.model.wide <- data.frame()
-# models <- unique(df.model$model)
+#   group_by(scenario,model) %>%
+#   summarise(Nyear = length(unique(year)),
+#             Ndata.per.year = sum(year == year[1])/1e6)
 #
-# for (cmodel in models){
-#   print(cmodel)
-#   cdf <- df.model  %>%
-#     filter(model == cmodel) %>%
-#     dplyr::select(-scenario) %>%
-#     pivot_wider(names_from = "variable",
-#                 values_from = "value")
-#
-#
-#   if (!("cRoot") %in% colnames(cdf)){
-#     cdf <- cdf %>%
-#       mutate(cRoot = NA_real_)
-#   }
-#   df.model.wide <- bind_rows(df.model.wide,
-#                              cdf %>%
-#                                mutate(cAGB = case_when(!is.na(cRoot) ~ cVeg - cRoot,
-#                                                        TRUE ~ cVeg))
-#   )
-# }
-
-
-#
-#
-# types <- df.model.wide %>%
+# df.model.select <- df.model %>%
 #   group_by(model) %>%
-#   summarise(type = all(is.na(cRoot)))
-
-# cdf.sum.sum <- df.model.wide
-#   group_by(model,lon,lat) %>%
-#   summarise(cVeg = mean(cVeg,
-#                         na.rm = TRUE),
-#             cRoot = mean(cVeg,
-#                         na.rm = TRUE),
-#             .groups = "keep") %>%
-#   mutate(cAGB = case_when(!is.na(cRoot) ~ cVeg - cRoot,
-#                           TRUE ~ cVeg))
-
-# world <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")
+#   filter(lat == lat[1],lon == lon[1])
 #
-# ggplot() +
-#
-#   geom_raster(data = cdf.sum.sum %>% filter(lon >= -80,
-#                                             lon <= -35),
-#               aes(x = lon, y = lat,
-#                   fill = cVeg), na.rm = TRUE, alpha = 1) +
-#
-#   geom_sf(data = world,
-#           fill = NA) +
-#
-#   coord_sf(xlim = c(-80, -35),
-#            ylim = c(-20, 25)) +
-#
-#   # scale_fill_gradient(low ="white",high = "darkgreen",na.value = "transparent",
-#   #                     limits = c(0,25),
-#   #                     oob = scales::squish) +
-#   labs(x = "",y = "") +
-#
-#   facet_wrap(~ model) +
-#
+# ggplot(data = df.model.select) +
+#   geom_point(aes(x = year, y = value, color = model)) +
+#   facet_grid(variable ~ scenario) +
 #   theme_bw()
-
-df.model.wide <- df.model %>%
-  ungroup() %>%
-  dplyr::select(model,lon,lat,year,variable,value) %>%
-  pivot_wider(names_from = "variable",
-              values_from = "value")
-
-
-
+#
+# # df.model.wide <- data.frame()
+# # models <- unique(df.model$model)
+# #
+# # for (cmodel in models){
+# #   print(cmodel)
+# #   cdf <- df.model  %>%
+# #     filter(model == cmodel) %>%
+# #     dplyr::select(-scenario) %>%
+# #     pivot_wider(names_from = "variable",
+# #                 values_from = "value")
+# #
+# #
+# #   if (!("cRoot") %in% colnames(cdf)){
+# #     cdf <- cdf %>%
+# #       mutate(cRoot = NA_real_)
+# #   }
+# #   df.model.wide <- bind_rows(df.model.wide,
+# #                              cdf %>%
+# #                                mutate(cAGB = case_when(!is.na(cRoot) ~ cVeg - cRoot,
+# #                                                        TRUE ~ cVeg))
+# #   )
+# # }
+#
+#
+# #
+# #
+# # types <- df.model.wide %>%
+# #   group_by(model) %>%
+# #   summarise(type = all(is.na(cRoot)))
+#
+# # cdf.sum.sum <- df.model.wide
+# #   group_by(model,lon,lat) %>%
+# #   summarise(cVeg = mean(cVeg,
+# #                         na.rm = TRUE),
+# #             cRoot = mean(cVeg,
+# #                         na.rm = TRUE),
+# #             .groups = "keep") %>%
+# #   mutate(cAGB = case_when(!is.na(cRoot) ~ cVeg - cRoot,
+# #                           TRUE ~ cVeg))
+#
+# # world <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf")
+# #
+# # ggplot() +
+# #
+# #   geom_raster(data = cdf.sum.sum %>% filter(lon >= -80,
+# #                                             lon <= -35),
+# #               aes(x = lon, y = lat,
+# #                   fill = cVeg), na.rm = TRUE, alpha = 1) +
+# #
+# #   geom_sf(data = world,
+# #           fill = NA) +
+# #
+# #   coord_sf(xlim = c(-80, -35),
+# #            ylim = c(-20, 25)) +
+# #
+# #   # scale_fill_gradient(low ="white",high = "darkgreen",na.value = "transparent",
+# #   #                     limits = c(0,25),
+# #   #                     oob = scales::squish) +
+# #   labs(x = "",y = "") +
+# #
+# #   facet_wrap(~ model) +
+# #
+# #   theme_bw()
+#
+# df.model.wide <- df.model %>%
+#   ungroup() %>%
+#   dplyr::select(model,lon,lat,year,variable,value) %>%
+#   pivot_wider(names_from = "variable",
+#               values_from = "value")
+#
+#
+#
 # scp /home/femeunier/Documents/projects/TrENDY.analyses/scripts/combine.Trendy.outputs.R hpc:/kyukon/data/gent/vo/000/gvo00074/felicien/R/
 

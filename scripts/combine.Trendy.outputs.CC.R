@@ -11,9 +11,11 @@ library(zoo)
 #               "./outputs/"))
 
 model.names <- get.model.names.TRENDY(version = "v11")
+# model.names <- 'LPJ-GUESS'
+
 scenarios <- c("S2")
 variables <- c("gpp","npp","rh","nbp")
-lat.min = -35 ; lat.max = 35 ; year.min = 1901
+lat.min = -25 ; lat.max = 25 ; year.min = 1901
 op.type = "monthly"
 average = FALSE
 
@@ -24,7 +26,7 @@ for (cmodel in model.names){
 
   print(cmodel)
 
-  OPfile <- paste0("./outputs/Trendy.",cmodel,".",scenarios,".CC.centralAfrica.v11.RDS")
+  OPfile <- paste0("./outputs/Trendy.",cmodel,".",scenarios,".CC.pantropical.v11.update.RDS")
   # if (file.exists(OPfile)) next()
 
   cdf <- df.model <- data.frame()
@@ -38,9 +40,7 @@ for (cmodel in model.names){
 
       print(paste0("-- ",cscenario))
 
-      # op.file <- paste0("./outputs/Trendy.",cmodel,".",cscenario,".",cvariable,"_v11.RDS")
-      # op.file <- paste0("./outputs/Trendy.",cmodel,".",cscenario,".",cvariable,".rspld_v11.RDS")
-      op.file <- paste0("./outputs/Trendy.",cmodel,".",cscenario,".",cvariable,".centralAfrica.v11.RDS")
+      op.file <- paste0("./outputs/Trendy.",cmodel,".",cscenario,".",cvariable,".pantropical.v11.update.RDS")
 
       if (!file.exists(op.file)) {
         warning(paste0("could not find file: ",op.file))
@@ -182,126 +182,34 @@ for (cmodel in model.names){
 
   compt.model <- compt.model + 1
 
-  if (all(c("gpp","npp","rh") %in% unique(df.model$variable))){
 
-    df.model.wide <- df.model %>%
-      # mutate(lat = round(lat, digits = 3),
-      #        lon = round(lon, digits = 3)) %>%
-      dplyr::select(-c(abs.time,model,scenario,time.unit)) %>%
-      pivot_wider(names_from = "variable",
-                  values_from = "value") %>%
-      filter(lat >= lat.min, lat <= lat.max,
-             year >= year.min) %>%
-      mutate(ra = gpp - npp,
-             nep = npp - rh)
+  df.model.wide <- df.model %>%
+    dplyr::select(-c(abs.time,model,scenario,time.unit)) %>%
+    pivot_wider(names_from = "variable",
+                values_from = "value") %>%
+    filter(lat >= lat.min, lat <= lat.max,
+           year >= year.min)
 
-    saveRDS(df.model.wide,
-            OPfile)
-  } else if (all(c("gpp","npp") %in% unique(df.model$variable))){
+  missing.vars <- variables[!(variables %in% colnames(df.model.wide))]
 
-    df.model.wide <- df.model %>%
-      # mutate(lat = round(lat, digits = 3),
-      #        lon = round(lon, digits = 3)) %>%
-      dplyr::select(-c(abs.time,model,scenario,time.unit)) %>%
-      pivot_wider(names_from = "variable",
-                  values_from = "value") %>%
-      filter(lat >= lat.min, lat <= lat.max,
-             year >= year.min) %>%
-      mutate(ra = gpp - npp,
-             rh = NA,
-             nep = NA)
+  if (length(missing.vars) > 0){
+    for (imissing.var in seq(1,length(missing.vars))){
+      cmissing.var <- missing.vars[imissing.var]
+      df.model.wide[[cmissing.var]] <- NA
+    }
+  }
 
-    saveRDS(df.model.wide,
-            OPfile)
-  }  else if (all(c("rh","npp") %in% unique(df.model$variable))){
 
-    df.model.wide <- df.model %>%
-      # mutate(lat = round(lat, digits = 3),
-      #        lon = round(lon, digits = 3)) %>%
-      dplyr::select(-c(abs.time,model,scenario,time.unit)) %>%
-      pivot_wider(names_from = "variable",
-                  values_from = "value") %>%
-      filter(lat >= lat.min, lat <= lat.max,
-             year >= year.min) %>%
-      mutate(nep = npp - rh,
-             ra = NA,
-             gpp = NA)
+  df.model.wide.all <- df.model.wide %>%
+    mutate(ra = gpp - npp,
+           nep = npp - rh)
 
-    saveRDS(df.model.wide,
-            OPfile)
-  }  else if (all(c("gpp","rh") %in% unique(df.model$variable))){
+  saveRDS(df.model.wide.all,
+          OPfile)
 
-    df.model.wide <- df.model %>%
-      # mutate(lat = round(lat, digits = 3),
-      #        lon = round(lon, digits = 3)) %>%
-      dplyr::select(-c(abs.time,model,scenario,time.unit)) %>%
-      pivot_wider(names_from = "variable",
-                  values_from = "value") %>%
-      filter(lat >= lat.min, lat <= lat.max,
-             year >= year.min) %>%
-      mutate(ra = NA,
-             rh = NA,
-             nep = NA)
-
-    saveRDS(df.model.wide,
-            OPfile)
-
-  }  else if (all(c("gpp") %in% unique(df.model$variable))){
-
-    df.model.wide <- df.model %>%
-      # mutate(lat = round(lat, digits = 3),
-      #        lon = round(lon, digits = 3)) %>%
-      dplyr::select(-c(abs.time,model,scenario,time.unit)) %>%
-      pivot_wider(names_from = "variable",
-                  values_from = "value") %>%
-      filter(lat >= lat.min, lat <= lat.max,
-             year >= year.min) %>%
-      mutate(ra = NA,
-             rh = NA,
-             npp = NA,
-             nep = NA)
-
-    saveRDS(df.model.wide,
-            OPfile)
-  } else if (all(c("npp") %in% unique(df.model$variable))){
-
-    df.model.wide <- df.model %>%
-      # mutate(lat = round(lat, digits = 3),
-      #        lon = round(lon, digits = 3)) %>%
-      dplyr::select(-c(abs.time,model,scenario,time.unit)) %>%
-      pivot_wider(names_from = "variable",
-                  values_from = "value") %>%
-      filter(lat >= lat.min, lat <= lat.max,
-             year >= year.min) %>%
-      mutate(ra = NA,
-             rh = NA,
-             gpp = NA,
-             nep = NA)
-
-    saveRDS(df.model.wide,
-            OPfile)
-  } else if (all(c("rh") %in% unique(df.model$variable))){
-
-    df.model.wide <- df.model %>%
-      # mutate(lat = round(lat, digits = 3),
-      #        lon = round(lon, digits = 3)) %>%
-      dplyr::select(-c(abs.time,model,scenario,time.unit)) %>%
-      pivot_wider(names_from = "variable",
-                  values_from = "value") %>%
-      filter(lat >= lat.min, lat <= lat.max,
-             year >= year.min) %>%
-      mutate(ra = NA,
-             gpp = NA,
-             npp = NA,
-             nep = NA)
-
-    saveRDS(df.model.wide,
-            OPfile)
-  } else {
-
+  if (length(missing.vars)){
     print("Missing variables")
-    print(unique(df.model$variable))
-
+    print(missing.vars)
   }
 }
 

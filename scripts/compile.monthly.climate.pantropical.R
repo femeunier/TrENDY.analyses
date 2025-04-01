@@ -2,7 +2,7 @@ rm(list = ls())
 
 library(dplyr)
 
-years <- c(seq(1950,2020,10),2022)
+years <- c(seq(1910,2020,10),2023)
 
 df.all <- data.frame()
 for (cyear in years){
@@ -17,3 +17,5 @@ for (cyear in years){
 
 saveRDS(df.all,
         "./outputs/monthly.climate.pantropical.CRUJRA.RDS")
+        
+# scp /home/femeunier/Documents/projects/TrENDY.analyses/scripts/compile.monthly.climate.pantropical.R hpc:/data/gent/vo/000/gvo00074/felicien/R/

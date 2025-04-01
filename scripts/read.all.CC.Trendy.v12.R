@@ -31,8 +31,6 @@ variables.names[[4]] <- c("nbp")
 biome <- readRDS("./outputs/biome.RDS")
 biome.rst <- rasterFromXYZ(biome[,c("lon","lat","tmp")])
 
-
-
 #######################################################################
 
 all.df <- data.frame()
@@ -67,14 +65,14 @@ for (imodel in seq(1,length(model.dir))){
       #                    lat2select =  c(-25,20),
       #                    lon2select = c(-80,-35))
 
-      op <- paste0("./outputs/Trendy.",cmodel,".",cscenario,".",cvariable,".global.v12.RDS")
+      op <- paste0("./outputs/Trendy.",cmodel,".",cscenario,".",cvariable,".pantropical.v12.RDS")
 
       #if (file.exists(op)) next()
 
       cdf <- read.Trendy(ncfile,
                          variables.names = variables.names[[ivariable]],
                          years2select = c(-Inf,Inf),
-                         lat2select =  c(-90,90),
+                         lat2select =  c(-25,25),
                          lon2select = NULL)
 
       print(paste(min(cdf$time),"-",max(cdf$time)))

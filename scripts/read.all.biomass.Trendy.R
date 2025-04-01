@@ -65,14 +65,14 @@ for (imodel in seq(1,length(model.dir))){
 
       cdf <- read.Trendy(ncfile,
                          variables.names = variables.names[[ivariable]],
-                         years2select = c(2000,Inf),
+                         years2select = c(-Inf,Inf),
                          lat2select =  NULL,
                          lon2select = NULL)
-
+                         
       print(paste(min(cdf$time),"-",max(cdf$time)))
 
       saveRDS(cdf,
-              paste0("./outputs/Trendy.",cmodel,".",cscenario,".",cvariable,".Global.latest.v11.RDS"))
+              paste0("./outputs/Trendy.",cmodel,".",cscenario,".",cvariable,".Africa.latest.v11.RDS"))
 
       # cdf.rspld <- resample.df.all.col(bigdf = cdf,
       #                                  raster2resample = biome.rst.crop,

@@ -9,10 +9,11 @@ library(ggplot2)
 library(sf)
 library(PEcAn.data.atmosphere)
 
-years <- 2011:2022
+years <- 2023
 
 vars <- c("pre","tmp","tmin","tmax",
           "dlwrf","dswrf","spfh")
+# vars <- c("pre")
 
 # dir <- "/home/femeunier/Documents/projects/TrENDY.analyses/data"
 dir <- "/data/gent/vo/000/gvo00074/felicien/TrENDY/inputs"
@@ -25,7 +26,7 @@ all.days.hours <- sort(rep(all.days,4))
 
 df.all <- df.all.monthly <- data.frame()
 
-prefix <- c("2.1","2.2","2.3","2.3.1","2.4")
+prefix <- rev(c("2.1","2.2","2.3","2.3.1","2.4","2.5"))
 
 for (cyear in years){
 
@@ -196,6 +197,7 @@ for (cyear in years){
   df.all.monthly <- bind_rows(list(df.all.monthly,
                                    cmonth.df %>%
                                      mutate(year = cyear)))
+                                     
 
   if ((cyear %% 10) == 0 | cyear == max(years)){
 

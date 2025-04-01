@@ -13,6 +13,8 @@ library(TrENDY.analyses)
 maindir <- "/data/gent/vo/000/gvo00074/felicien/TrENDYv11/"
 
 model.names <- get.model.names.TRENDY(version = "v11")
+model.names <- model.names[seq(length(model.names),1,-1)]
+
 
 model.dir <- rep("",length(model.names))
 scenarios <- c("S2","S3")
@@ -25,25 +27,6 @@ variables.names[[1]] <- c("gpp","gpp_nlim")
 variables.names[[2]] <- c("npp","npp_nlim")
 variables.names[[3]] <- c("rh")
 variables.names[[4]] <- c("nbp")
-
-#######################################################################
-# For regridding
-biome <- readRDS("./outputs/biome.RDS")
-biome.rst <- rasterFromXYZ(biome[,c("lon","lat","tmp")])
-
-e <- as(extent(-100, 180, -25, 25), 'SpatialPolygons')
-crs(e) <- "+proj=longlat +datum=WGS84 +no_defs"
-biome.rst.crop <- crop(biome.rst, e)
-
-# e <- as(extent(-10, 45, -15, 10), 'SpatialPolygons')
-# crs(e) <- "+proj=longlat +datum=WGS84 +no_defs"
-# biome.rst.crop <- crop(biome.rst, e)
-
-# e <- as(extent(-80, -35, -25, 20), 'SpatialPolygons')
-# crs(e) <- "+proj=longlat +datum=WGS84 +no_defs"
-# biome.rst.crop <- crop(biome.rst, e)
-
-
 
 #######################################################################
 
@@ -79,15 +62,15 @@ for (imodel in seq(1,length(model.dir))){
       #                    lat2select =  c(-25,20),
       #                    lon2select = c(-80,-35))
 
-      op <- paste0("./outputs/Trendy.",cmodel,".",cscenario,".",cvariable,".centralAfrica.v11.RDS")
+      op <- paste0("./outputs/Trendy.",cmodel,".",cscenario,".",cvariable,".pantropical.v11.update.RDS")
 
-      #if (file.exists(op)) next()
+      if (file.exists(op)) next()
 
       cdf <- read.Trendy(ncfile,
                          variables.names = variables.names[[ivariable]],
-                         years2select = c(2000,Inf),
-                         lat2select =  c(-35,35),
-                         lon2select = c(-30,60))
+                         years2select = c(-Inf,Inf),
+                         lat2select =  c(-25,25),
+                         lon2select = NULL)
 
       print(paste(min(cdf$time),"-",max(cdf$time)))
 
