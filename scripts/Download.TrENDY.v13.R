@@ -22,7 +22,7 @@ localdir <- file.path(dir,"localdir")
 #            showWarnings = FALSE)
 
 files2download <- c(list.files(file.path(localdir),
-                               pattern = "*_gpp.nc*",
+                               pattern = "*_nbp.nc*",
                                recursive = TRUE))
 
 files2download <- file.path(sp.folder,

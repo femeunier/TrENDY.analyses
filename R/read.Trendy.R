@@ -49,11 +49,18 @@ read.Trendy <- function(ncfile,
   lons[lons>180] <- lons[lons>180] -360
 
   # ncfilin <- ncdf4::nc_open(ncfile)
-  times <- TrENDY.analyses::nc.get.time.series(f = nc)
+
   # ncdf4::nc_close(ncfilin)
 
   years <- lubridate::year(times)
   months <- lubridate::month(times)
+
+  times <- TrENDY.analyses::nc.get.time.series(f = nc)
+  if (all(is.na(times))){
+    A <- 11/12+ncvar_get(nc,"time")/12
+    years <- floor(A)
+    months <- 1+(A - years)*12
+  }
 
 
   # times <- NULL ; i = 1
