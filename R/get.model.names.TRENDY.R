@@ -12,7 +12,7 @@ get.model.names.TRENDY <- function(version = "v11"){
                      "LPX-Bern","OCN","ORCHIDEE","SDGVM","VISIT","YIBs")  # v12
   } else if (version == "v13"){
     model.names <- c("CABLE-POP","CARDAMOM","CLASSIC","CLM6.0",
-                     "DLEM","EDv3","E3SM","IBIS","iMAPLE",,"ISAM","ISBA-CTRIP",
+                     "DLEM","EDv3","E3SM","IBIS","iMAPLE","ISAM","ISBA-CTRIP",
                      "JSBACH","JULES","LPJ-GUESS","LPJmL","LPJwsl",
                      "LPX-Bern","OCN","ORCHIDEE","SDGVM","VISIT","visit-ut")  # v12
  } else if (version == "Example"){
