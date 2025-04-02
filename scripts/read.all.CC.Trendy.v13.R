@@ -87,4 +87,7 @@ for (imodel in seq(1,length(model.dir))){
   }
 }
 
+system2("rsync",c("-avz",
+                  "hpc:/data/gent/vo/000/gvo00074/felicien/TrENDYv13"))
+
 # scp /home/femeunier/Documents/projects/TrENDY.analyses/scripts/read.all.CC.Trendy.v13.R hpc:/kyukon/data/gent/vo/000/gvo00074/felicien/R/

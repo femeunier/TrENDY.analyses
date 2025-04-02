@@ -42,4 +42,6 @@ for (ifile in seq(1,length(files2download))){
   # }
 }
 
+system2("rsync",c("-avz",paste0(dir,"/*nbp*"),
+                  "hpc:/data/gent/vo/000/gvo00074/felicien/TrENDYv13"))
 

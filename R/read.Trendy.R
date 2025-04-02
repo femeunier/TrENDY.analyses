@@ -60,7 +60,8 @@ read.Trendy <- function(ncfile,
   if (all(is.na(times))){
     A <- 11/12+ncvar_get(nc,"time")/12
     years <- floor(A)
-    months <- 1+(A - years)*12
+    months <- round(1+(A - years)*12)
+    times <- as.Date(paste0(years,"/",months,"/","01"))
   }
 
 

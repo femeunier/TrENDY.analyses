@@ -10,7 +10,7 @@ library(zoo)
 #         paste("-avz","hpc:/kyukon/data/gent/vo/000/gvo00074/felicien/R/outputs/Trendy.VISIT-NIES.S2.gpp.pantropical.v11.RDS",
 #               "./outputs/"))
 
-model.names <- get.model.names.TRENDY("v13")
+model.names <- get.model.names.TRENDY("v13")[10]
 
 scenarios <- c("S2")
 variables <- c("gpp")
