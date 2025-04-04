@@ -10,7 +10,8 @@ library(zoo)
 #         paste("-avz","hpc:/kyukon/data/gent/vo/000/gvo00074/felicien/R/outputs/Trendy.VISIT-NIES.S2.gpp.pantropical.v11.RDS",
 #               "./outputs/"))
 
-model.names <- get.model.names.TRENDY("v13")[10]
+model.names <- get.model.names.TRENDY("v13")
+model.names <- "CARDAMOM"
 
 scenarios <- c("S2")
 variables <- c("gpp")
@@ -25,7 +26,7 @@ for (cmodel in model.names){
 
   print(cmodel)
 
-  OPfile <- paste0("./outputs/Trendy.",cmodel,".",scenarios,".CC.pantropical.v12.RDS")
+  OPfile <- paste0("./outputs/Trendy.",cmodel,".",scenarios,".CC.pantropical.v13.RDS")
   # if (file.exists(OPfile)) next()
 
   cdf <- df.model <- data.frame()

@@ -118,6 +118,11 @@ read.Trendy <- function(ncfile,
   if (min(diff(check.time)) == 0){
 
     months <- rep(1:12,length(times)/12)
+
+    if (!all(table(years) == 12)){
+      years <- sort(rep(unique(years),12))
+    }
+
     new.times <- PCICt::as.PCICt.default(paste0(years,"/",sprintf("%02d",months),"/01"),
                                      cal = "gregorian")
 

@@ -12,11 +12,12 @@ library(TrENDY.analyses)
 
 maindir <- "/data/gent/vo/000/gvo00074/felicien/TrENDYv13/"
 
-model.names <- TrENDY.analyses::get.model.names.TRENDY(version = "v13")[10]
+model.names <- TrENDY.analyses::get.model.names.TRENDY(version = "v13")
+model.names <- "CARDAMOM"
 
 model.dir <- rep("",length(model.names))
 scenarios <- c("S2")
-variables <- c("gpp")
+variables <- c("gpp","nbp")
 
 ########################################################################
 # For reading
@@ -24,7 +25,7 @@ variables.names <- list()
 variables.names[[1]] <- c("gpp","gpp_nlim")
 # variables.names[[2]] <- c("npp","npp_nlim")
 # variables.names[[3]] <- c("rh")
-# variables.names[[4]] <- c("nbp")
+variables.names[[2]] <- c("nbp","nbp_nlim")
 
 all.df <- data.frame()
 
@@ -87,7 +88,5 @@ for (imodel in seq(1,length(model.dir))){
   }
 }
 
-system2("rsync",c("-avz",
-                  "hpc:/data/gent/vo/000/gvo00074/felicien/TrENDYv13"))
 
 # scp /home/femeunier/Documents/projects/TrENDY.analyses/scripts/read.all.CC.Trendy.v13.R hpc:/kyukon/data/gent/vo/000/gvo00074/felicien/R/
