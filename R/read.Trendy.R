@@ -12,9 +12,9 @@ read.Trendy <- function(ncfile,
   # library(reshape2)
   # #
   # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv12/CARDAMOM_S2_gpp.nc"
-  # lat.names = c("latitude","lat","lat_FULL")
-  # lon.names = c("longitude","lon","lon_FULL")
-  # time.names = c("time","time_counter")
+  lat.names = c("latitude","lat","lat_FULL")
+  lon.names = c("longitude","lon","lon_FULL")
+  time.names = c("time","time_counter")
   # variables.names = c("npp")
   # years2select  = c(1960,Inf)
   # lat2select =  c(-20,15)
@@ -137,6 +137,8 @@ read.Trendy <- function(ncfile,
 
       Delta <- -(length(old.times) - length(times))
       times <- times[(Delta + 1) : length(times)]
+      years <- lubridate::year(times)
+      months <- lubridate::month(times)
 
     }
 
