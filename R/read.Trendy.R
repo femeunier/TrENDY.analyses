@@ -53,6 +53,7 @@ read.Trendy <- function(ncfile,
   # ncdf4::nc_close(ncfilin)
 
   times <- TrENDY.analyses::nc.get.time.series(f = nc)
+  old.times <- times
 
   years <- lubridate::year(times)
   months <- lubridate::month(times)
@@ -126,11 +127,19 @@ read.Trendy <- function(ncfile,
     new.times <- PCICt::as.PCICt.default(paste0(years,"/",sprintf("%02d",months),"/01"),
                                      cal = "gregorian")
 
-    warning(paste("Correcting time for",ncfile,"\r\n",
-                  "Previous times:",times,"\r\n",
-                  "New times:",new.times,"\r\n"))
+    # warning(paste("Correcting time for",ncfile,"\r\n",
+    #               "Previous times:",times,"\r\n",
+    #               "New times:",new.times,"\r\n"))
 
     times <- new.times
+
+    if(length(times) != length(old.times)){
+
+      Delta <- -(length(old.times) - length(times))
+      times <- times[(Delta + 1) : length(times)]
+
+    }
+
   }
 
 
