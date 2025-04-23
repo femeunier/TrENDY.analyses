@@ -43,8 +43,6 @@ nc.get.time.series <- function (f, v, time.dim.name, correct.for.gregorian.julia
     time.split[3] <- '0000/01/01'
   }
 
-  if ()
-
   time.res <- time.split[1]
   time.calendar.att <- ncdf4::ncatt_get(f, time.dim.name,
                                         "calendar")
