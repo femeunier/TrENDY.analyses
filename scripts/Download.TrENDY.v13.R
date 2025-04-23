@@ -22,11 +22,11 @@ localdir <- file.path(dir,"localdir")
 #            showWarnings = FALSE)
 
 files2download <- c(list.files(file.path(localdir),
-                               pattern = "*_nbp.nc*",
+                               pattern = "*_gpp.nc*",
                                recursive = TRUE))
 
 files2download <- file.path(sp.folder,
-                            files2download[grepl("S2",files2download)])
+                            files2download[grepl("S3",files2download)])
 
 setwd(paste0(dir))
 overwrite = FALSE
@@ -42,6 +42,6 @@ for (ifile in seq(1,length(files2download))){
   # }
 }
 
-system2("rsync",c("-avz",paste0(dir,"/*nbp*"),
+system2("rsync",c("-avz",paste0(dir,"/*gpp*"),
                   "hpc:/data/gent/vo/000/gvo00074/felicien/TrENDYv13"))
 

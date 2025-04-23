@@ -2,11 +2,10 @@ rm(list = ls())
 
 library(dplyr)
 library(ggplot2)
-library(Congo.ED2)
+# library(Congo.ED2)
 library(tidyr)
 
-clon = 24.8 ; clat = 0.8
-years <- 1900:2020
+years <- 2023:2023
 
 ################################################################################
 # CCycle
@@ -15,12 +14,62 @@ system2("rsync",c("-avz",
                   "hpc:/kyukon/data/gent/vo/000/gvo00074/felicien/R/outputs/df.YGB.all.Trendy.RDS",
                   "./outputs/"))
 
-df.model <- readRDS("./outputs/df.YGB.all.Trendy.RDS") %>%
-  dplyr::select(-c(time,time.unit,model.lat.lon)) %>%
+df.model.wide <- readRDS("./outputs/df.YGB.all.Trendy.RDS") %>%
+  dplyr::select(-any_of(c("time","model.lat.lon"))) %>%
   filter(year %in% years) %>%
-  pivot_longer(cols = c("gpp","npp","nep","ra","rh"),
+  mutate(npp = case_when(is.na(npp) & !is.na(gpp) & !is.na(ra) ~ gpp - ra,
+                         TRUE ~ npp),
+         nep = case_when(is.na(nep) & !is.na(nep) ~ -nee,
+                         is.na(nep) & !is.na(gpp) & !is.na(ra) & !is.na(rh) ~ gpp - ra - rh,
+                         is.na(nep) & !is.na(npp) & !is.na(rh) ~ npp - rh,
+                         TRUE ~ nep)) %>%
+  dplyr::select(-nee)
+
+df.model <- df.model.wide %>%
+  pivot_longer(cols = -c("lon","lat","year","month","model"),
                names_to = "variable",
-               values_to = "value")
+               values_to = "value") %>%
+  filter(!is.na(value))
+
+df.model %>%
+  group_by(variable) %>%
+  summarise(N = length(unique(model)),
+            .groups = "keep")
+
+df.ts <- df.model %>%
+  group_by(model,variable,year,month) %>%
+  summarise(value.m = mean(value,na.rm = TRUE),
+            .groups = "keep")
+
+df.ts.m <- df.ts %>%
+  group_by(variable,year,month) %>%
+  summarise(value.se = sd(value.m,na.rm = TRUE)/sqrt(length(value.m)),
+            value.m = mean(value.m,na.rm = TRUE),
+
+            .groups = "keep")
+
+ggplot() +
+  geom_line(data = df.ts,
+            aes(x = year + (month - 1/2)/12, y = value.m*86400*365, group = model),
+            color = "darkgrey",linetype = 2) +
+
+  geom_ribbon(data = df.ts.m,
+            aes(x = year + (month - 1/2)/12,
+                y = value.m*86400*365,
+                ymin = (value.m - 1.96*value.se)*86400*365,
+                ymax = (value.m + 1.96*value.se)*86400*365),
+            fill = "darkgrey", alpha = 0.5) +
+
+  geom_line(data = df.ts.m,
+            aes(x = year + (month - 1/2)/12,
+                y = value.m*86400*365),
+            color = "black") +
+
+  facet_wrap(~variable, nrow = 1) +
+  labs(x = "", y = "Carbon flux (kgC/m²/year)") +
+  geom_hline(yintercept = 0, linetype = 2, color = "black") +
+
+  theme_bw()
 
 
 df.model.sum <- df.model %>%
@@ -37,7 +86,9 @@ df.model.sum2 <- df.CC %>%
                values_to = "value",
                names_to = "variable") %>%
   mutate(variable = factor(variable,
-                           levels = c("gpp","ra","npp","rh","nep")))
+                           levels = c("gpp","ra",
+                                      "npp","rh",
+                                      "nep","nee","nbp")))
 
 df.model.sum.ensemble <- df.model.sum2 %>%
   group_by(variable,month) %>%
@@ -73,6 +124,32 @@ ggplot() +
   theme_bw()
 
 
+ggplot() +
+  geom_line(data = df.model.sum2 %>%
+              filter(variable == "nep"),
+            aes(x = month, y = value*86400*365, color = model)) +
+
+  geom_ribbon(data = df.model.sum.ensemble %>%
+                filter(variable == "nep"),
+              aes(x = month,
+                  y = value.m*86400*365,
+                  ymin = (value.m - 1.96*value.se)*86400*365,
+                  ymax = (value.m + 1.96*value.se)*86400*365),
+              fill = "darkgrey", alpha = 0.5) +
+
+  geom_line(data = df.model.sum.ensemble %>%
+              filter(variable == "nep"),
+            aes(x = month, y = value.m*86400*365),
+            color = "black") +
+  labs(x = "", y = "Carbon flux (kgC/m²/year)") +
+  scale_x_continuous(breaks = seq(1,12),
+                     labels = c("J","F","M","A","M","J",
+                                "J","A","S","O","N","D")) +
+  geom_hline(yintercept = 0, linetype = 2, color = "black") +
+
+  theme_bw()
+
+
 
 ggplot() +
 
@@ -95,6 +172,8 @@ ggplot() +
 
   theme_bw()
 
+
+stop()
 ################################################################################
 
 system2("rsync",c("-avz",

@@ -38,6 +38,9 @@ nc.get.time.series <- function (f, v, time.dim.name, correct.for.gregorian.julia
     } else {
       time.split <- strsplit(ctemp, " ")[[1]]
     }
+  } else if (length(time.split) == 1){
+    time.split[2] <- "since"
+    time.split[3] <- '0000/01/01'
   }
 
   time.res <- time.split[1]

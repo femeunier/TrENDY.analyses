@@ -15,8 +15,8 @@ model.names <- get.model.names.TRENDY(version = "v13")
 # op.type = "monthly"
 # average = FALSE
 
-scenarios <- c("S2")
-variables <- c("gpp")
+scenarios <- c("S3")
+variables <- c("cVeg","cRoot")
 op.type = "monthly"
 average = FALSE
 
@@ -144,17 +144,17 @@ for (cmodel in model.names){
     }
   }
 
-  # df.model.wide <- df.model %>%
-  #   dplyr::select(-c(abs.time,model,scenario)) %>%
-  #   pivot_wider(names_from = "variable",
-  #               values_from = "value") %>%
-  #   filter(year >= 1900) %>%
+  df.model.wide <- df.model %>%
+    dplyr::select(-c(abs.time,model,scenario)) %>%
+    pivot_wider(names_from = "variable",
+                values_from = "value") %>%
+    filter(year >= 1900) #%>%
   #   mutate(ra = gpp - npp,
   #          nep = npp - rh)
 
 
   saveRDS(df.model.wide,
-          paste0("./outputs/Trendy.",cmodel,".S2.NBP.pantropical.v11.RDS"))
+          paste0("./outputs/Trendy.",cmodel,".S3.AGB.pantropical.v13.RDS"))
 
 }
 

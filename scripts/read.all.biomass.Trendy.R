@@ -10,14 +10,11 @@ library(raster)
 library(RColorBrewer)
 library(TrENDY.analyses)
 
-maindir <- "/data/gent/vo/000/gvo00074/felicien/TrENDYv11/"
+maindir <- "/data/gent/vo/000/gvo00074/felicien/TrENDYv13/"
 
-model.names <- get.model.names.TRENDY(version = "v11")
-# model.names <- c("JULES","ISAM","CLM5.0")
-# model.names <- c("ISAM")
+model.names <- get.model.names.TRENDY(version = "v13")
 
-model.dir <- rep("",length(model.names))
-scenarios <- c("S2")
+scenarios <- c("S3")
 variables <- c("cVeg","cRoot")
 
 ########################################################################
@@ -39,7 +36,7 @@ biome.rst.crop <- crop(biome.rst, e)
 
 all.df <- data.frame()
 
-for (imodel in seq(1,length(model.dir))){
+for (imodel in seq(1,length(model.names))){
 
   print(paste0("",model.names[imodel]))
   for (iscenario in seq(1,length(scenarios))){
@@ -66,13 +63,13 @@ for (imodel in seq(1,length(model.dir))){
       cdf <- read.Trendy(ncfile,
                          variables.names = variables.names[[ivariable]],
                          years2select = c(-Inf,Inf),
-                         lat2select =  NULL,
+                         lat2select =  c(-1,1)*30,
                          lon2select = NULL)
-                         
+
       print(paste(min(cdf$time),"-",max(cdf$time)))
 
       saveRDS(cdf,
-              paste0("./outputs/Trendy.",cmodel,".",cscenario,".",cvariable,".Africa.latest.v11.RDS"))
+              paste0("./outputs/Trendy.",cmodel,".",cscenario,".",cvariable,".pantropical.v13.RDS"))
 
       # cdf.rspld <- resample.df.all.col(bigdf = cdf,
       #                                  raster2resample = biome.rst.crop,

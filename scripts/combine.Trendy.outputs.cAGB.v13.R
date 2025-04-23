@@ -12,8 +12,8 @@ library(zoo)
 
 model.names <- get.model.names.TRENDY("v13")
 
-scenarios <- c("S2")
-variables <- c("gpp","ra","npp","rh","nee","nep","nbp")
+scenarios <- c("S3")
+variables <- c("cVeg","cRoot")
 lat.min = -25 ; lat.max = 25 ; year.min = 1901
 op.type = "monthly"
 average = FALSE
@@ -184,13 +184,13 @@ for (cmodel in model.names){
   compt.model <- compt.model + 1
 
   df.model.wide <- df.model %>%
-        # mutate(lat = round(lat, digits = 3),
-        #        lon = round(lon, digits = 3)) %>%
-        dplyr::select(-c(abs.time,time,model,scenario,time.unit)) %>%
-        pivot_wider(names_from = "variable",
-                    values_from = "value") %>%
-        filter(lat >= lat.min, lat <= lat.max,
-               year >= year.min)
+    # mutate(lat = round(lat, digits = 3),
+    #        lon = round(lon, digits = 3)) %>%
+    dplyr::select(-c(abs.time,time,model,scenario,time.unit)) %>%
+    pivot_wider(names_from = "variable",
+                values_from = "value") %>%
+    filter(lat >= lat.min, lat <= lat.max,
+           year >= year.min)
   CN <- colnames(df.model.wide)
   missing.CN <- which(!(variables %in% CN))
 
@@ -324,5 +324,5 @@ for (cmodel in model.names){
   # }
 }
 
-# scp /home/femeunier/Documents/projects/TrENDY.analyses/scripts/combine.Trendy.outputs.CC.v13.R hpc:/kyukon/data/gent/vo/000/gvo00074/felicien/R/
+# scp /home/femeunier/Documents/projects/TrENDY.analyses/scripts/combine.Trendy.outputs.cAGB.v13.R hpc:/kyukon/data/gent/vo/000/gvo00074/felicien/R/
 
