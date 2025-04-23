@@ -12,7 +12,7 @@ library(TrENDY.analyses)
 
 maindir <- "/data/gent/vo/000/gvo00074/felicien/TrENDYv13/"
 
-model.names <- get.model.names.TRENDY(version = "v13")
+model.names <- get.model.names.TRENDY(version = "v13")[4]
 
 scenarios <- c("S3")
 variables <- c("cVeg","cRoot")

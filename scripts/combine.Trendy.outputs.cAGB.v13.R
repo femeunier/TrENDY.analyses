@@ -10,12 +10,12 @@ library(zoo)
 #         paste("-avz","hpc:/kyukon/data/gent/vo/000/gvo00074/felicien/R/outputs/Trendy.VISIT-NIES.S2.gpp.pantropical.v11.RDS",
 #               "./outputs/"))
 
-model.names <- get.model.names.TRENDY("v13")
+model.names <- get.model.names.TRENDY("v13")[4]
 
 scenarios <- c("S3")
 variables <- c("cVeg","cRoot")
 lat.min = -25 ; lat.max = 25 ; year.min = 1901
-op.type = "monthly"
+op.type = "yearly"
 average = FALSE
 
 df.model <- data.frame()
