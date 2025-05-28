@@ -13,11 +13,11 @@ library(TrENDY.analyses)
 maindir <- "/data/gent/vo/000/gvo00074/felicien/TrENDYv13/"
 
 model.names <- TrENDY.analyses::get.model.names.TRENDY(version = "v13")
-model.names <- "CARDAMOM"
+# model.names <- "CARDAMOM"
 
 model.dir <- rep("",length(model.names))
-scenarios <- c("S2")
-variables <- c("gpp","nbp")
+scenarios <- c("S3")
+variables <- c("gpp")
 
 ########################################################################
 # For reading

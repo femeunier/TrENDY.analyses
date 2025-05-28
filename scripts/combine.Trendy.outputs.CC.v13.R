@@ -12,8 +12,9 @@ library(zoo)
 
 model.names <- get.model.names.TRENDY("v13")
 
-scenarios <- c("S2")
+scenarios <- c("S3")
 variables <- c("gpp","ra","npp","rh","nee","nep","nbp")
+variables <- c("gpp")
 lat.min = -25 ; lat.max = 25 ; year.min = 1901
 op.type = "monthly"
 average = FALSE
@@ -25,7 +26,7 @@ for (cmodel in model.names){
 
   print(cmodel)
 
-  OPfile <- paste0("./outputs/Trendy.",cmodel,".",scenarios,".cAGB.pantropical.v13.RDS")
+  OPfile <- paste0("./outputs/Trendy.",cmodel,".",scenarios,".CC.pantropical.v13.RDS")
   # if (file.exists(OPfile)) next()
 
   cdf <- df.model <- data.frame()
@@ -186,7 +187,7 @@ for (cmodel in model.names){
   df.model.wide <- df.model %>%
         # mutate(lat = round(lat, digits = 3),
         #        lon = round(lon, digits = 3)) %>%
-        dplyr::select(-c(abs.time,time,model,scenario,time.unit)) %>%
+        dplyr::select(-any_of(c("abs.time","time","model","scenario","time.unit"))) %>%
         pivot_wider(names_from = "variable",
                     values_from = "value") %>%
         filter(lat >= lat.min, lat <= lat.max,

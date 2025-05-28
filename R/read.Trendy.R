@@ -55,6 +55,16 @@ read.Trendy <- function(ncfile,
   times <- TrENDY.analyses::nc.get.time.series(f = nc)
   old.times <- times
 
+  if (all(is.na(times))){
+    Nyears <- round(length(times)/12)
+    years <- sort(rep(1700:(1700+Nyears-1),12))
+    months <- rep(1:12,Nyears)
+    times <- as.Date(paste0(years,'/',months,'/01'))
+
+    old.times <- times
+  }
+
+
   years <- lubridate::year(times)
   months <- lubridate::month(times)
 

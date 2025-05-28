@@ -10,7 +10,7 @@ library(zoo)
 #         paste("-avz","hpc:/kyukon/data/gent/vo/000/gvo00074/felicien/R/outputs/Trendy.VISIT-NIES.S2.gpp.pantropical.v11.RDS",
 #               "./outputs/"))
 
-model.names <- get.model.names.TRENDY("v13")[4]
+model.names <- get.model.names.TRENDY("v13")
 
 scenarios <- c("S3")
 variables <- c("cVeg","cRoot")
@@ -119,6 +119,31 @@ for (cmodel in model.names){
         cdf <- readRDS(op.file) %>%
           dplyr::filter(!is.na(value))
 
+
+
+        years <- cdf %>%
+          ungroup() %>%
+          filter(lat == lat[1],
+                 lon == lon[1]) %>% pull(time) %>% year()
+        months <- cdf %>%
+          ungroup() %>%
+          filter(lat == lat[1],
+                 lon == lon[1]) %>% pull(time) %>% month()
+
+        time.diff <- diff(years)
+
+        if (any(time.diff <= 0) & !all(c(1:12) %in% unique(months))){
+
+          cdf <- cdf %>%
+            group_by(lat,lon) %>%
+            mutate(year = 1700:(n() + 1700 - 1)) %>%
+            mutate(time = as.Date(paste0(year,"/01/01")))
+
+          print("Correcting yearly timeseries")
+
+        }
+
+
         if (average){
           cdf.sum <- cdf %>%
             ungroup() %>%
@@ -162,10 +187,12 @@ for (cmodel in model.names){
 
 
       if (init){
+
         df.model <-  cdf %>%
           mutate(model = cmodel,
                  scenario = cscenario,
                  variable = cvariable)
+
         init = FALSE
 
       } else {
