@@ -3,6 +3,7 @@ rm(list = ls())
 # ml lftp/4.9.2-GCCcore-11.2.0
 # sshfs user-39@trendydl.exeter.ac.uk:/ /data/gent/vo/000/gvo00074/felicien/TrENDYv12/localdir
 # Tei@m`o%j6yiethi
+# sftp user-39@trendydl.exeter.ac.uk:/
 
 
 sp.folder <- "trendy-v12"

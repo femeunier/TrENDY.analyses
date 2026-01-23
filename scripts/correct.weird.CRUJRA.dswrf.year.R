@@ -9,7 +9,17 @@ library(ggplot2)
 library(sf)
 library(PEcAn.data.atmosphere)
 
-years <- 2023
+
+input.file <-  "./outputs/monthly.climate.pantropical.2020.RDS"
+df <- readRDS(input.file)
+
+df.clean <- df %>%
+  filter(year != 2020)
+years <- 2020
+
+
+outputfile <- "./outputs/monthly.climate.pantropical.2020_mod.RDS"
+
 
 vars <- c("pre","tmp","tmin","tmax",
           "dlwrf","dswrf","spfh")
@@ -152,7 +162,7 @@ for (cyear in years){
   print(paste0("- VPD"))
 
   RH <- qair2rh(temp.array[,,,which(vars == "spfh")],
-          temp.array[,,,which(vars == "tmp")] - 273.15)
+                temp.array[,,,which(vars == "tmp")] - 273.15)
   VPD <- get.vpd(RH*100,
                  temp.array[,,,which(vars == "tmp")] - 273.15)
 
@@ -197,15 +207,12 @@ for (cyear in years){
   df.all.monthly <- bind_rows(list(df.all.monthly,
                                    cmonth.df %>%
                                      mutate(year = cyear)))
-                                     
 
-  if ((cyear %% 10) == 0 | cyear == max(years)){
-
-    saveRDS(df.all.monthly,
-            paste0("./outputs/monthly.climate.pantropical.",cyear,".RDS"))
-
-    df.all <- df.all.monthly <- data.frame()
-  }
 }
 
-# scp /home/femeunier/Documents/projects/TrENDY.analyses/scripts/monthly.climate.pantropical.R hpc:/data/gent/vo/000/gvo00074/felicien/R/
+final.df <- bind_rows(df.clean,
+                      df.all.monthly)
+
+saveRDS(final.df,outputfile)
+
+# scp /home/femeunier/Documents/projects/TrENDY.analyses/scripts/correct.weird.CRUJRA.dswrf.year.R hpc:/data/gent/vo/000/gvo00074/felicien/R/
