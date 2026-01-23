@@ -12,7 +12,7 @@ read.Trendy.pft <- function(ncfile,
   # library(lubridate)
   # library(reshape2)
   # #
-  # ncfile = "/data/gent/vo/000/gvo00074/felicien/NPP_William/CABLE-POP_S2_npppft.nc"
+  # ncfile = "/data/gent/vo/000/gvo00074/felicien/NPP_William/CLASSIC_S2_npppft.nc"
   # lat.names = c("latitude","lat","lat_FULL")
   # lon.names = c("longitude","lon","lon_FULL")
   # time.names = c("time","time_counter")
@@ -20,7 +20,7 @@ read.Trendy.pft <- function(ncfile,
   # years2select  = c(-Inf,Inf)
   # lat2select =  c(-5,15)
   # lon2select = NULL
-  # PFT.selection = 1
+  # PFT.selection = c(3,5)
 
   nc <- nc_open(ncfile)
 
@@ -186,9 +186,12 @@ read.Trendy.pft <- function(ncfile,
 
     if (nrow(cdf) > 0){
       if (nrow(all.df) == 0) {
-        all.df <- cdf
+        all.df <- cdf %>%
+          mutate(pft = cpft)
       } else {
-        all.df <- bind_rows(all.df, cdf)
+        all.df <- bind_rows(all.df,
+                            cdf %>%
+                              mutate(pft = cpft))
       }
     }
   }

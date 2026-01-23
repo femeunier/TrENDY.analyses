@@ -9,21 +9,31 @@ library(tidyr)
 library(raster)
 library(RColorBrewer)
 library(TrENDY.analyses)
+library(zoo)
 
 maindir <- "/data/gent/vo/000/gvo00074/felicien/NPP_William/"
 dest.dir <- "/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted"
 
-model.names <- c("VISIT")
+model.names <- c("CABLE-POP","CLASSIC",
+                 "IBIS","ISAM",
+                 "JSBACH","JULES","LPJ-GUESS",
+                 "LPJmL","OCN","ORCHIDEE",
+                 "SDGVM","VISIT","LPX-Bern")[2]
+
+PFT.selections <- list(c(1),c(3,5),
+                       c(2,4),c(1,2),
+                       c(3,4),c(1,2),c(8:10),
+                       c(1,2),c(2,3),c(2,3),
+                       c(9,11),c(1),c(1))[2]
 
 model.dir <- rep("",length(model.names))
 scenarios <- c("S2")
-variables <- c("gpp","ra")
+variables <- c("npppft")
 
 ########################################################################
 # For reading
 variables.names <- list()
-variables.names[[1]] <- c("gpp","gpp_nlim")
-variables.names[[2]] <- c("ra","ra_nlim")
+variables.names[[1]] <- c("npp","npp_nlim","npppft","npppft_nlim")
 
 all.df <- data.frame()
 
@@ -55,11 +65,13 @@ for (imodel in seq(1,length(model.dir))){
       op <- paste0(dest.dir,"/",
                    "Trendy.",cmodel,".",cscenario,".",cvariable,".pantropical.v12.RDS")
 
-      cdf <- read.Trendy(ncfile,
+      cdf <- read.Trendy.pft(ncfile,
                          variables.names = variables.names[[ivariable]],
+                         PFT.selection = PFT.selections[[imodel]],
                          years2select = c(-Inf,Inf),
                          lat2select =  c(-25,25),
                          lon2select = NULL)
+      print(summary(cdf$value))
 
       # Correct for times
 
@@ -123,6 +135,23 @@ for (imodel in seq(1,length(model.dir))){
         print("Shifting months")
       }
 
+      time.diff <- diff( cdf %>%
+                           ungroup() %>%
+                           filter(lat == lat[1],
+                                  lon == lon[1]) %>% pull(time))
+
+      if (any(time.diff <= 0)){
+
+        cdf <- cdf %>%
+          group_by(lat,lon) %>%
+          mutate(month = rep(1:12,n()/12),
+                 year = sort(rep(1700:(1700 + n()/12 - 1),12))) %>%
+          mutate(time = as.Date(paste0(year,"/",month,"/01")))
+
+        print("Correcting timeseries (2)")
+
+      }
+
 
       print(paste(min(cdf$time),"-",max(cdf$time)))
 
@@ -133,19 +162,4 @@ for (imodel in seq(1,length(model.dir))){
   }
 }
 
-# scp /Users/felicien/Documents/projects/TrENDY.analyses/scripts/read.npp.William.R hpc:/kyukon/data/gent/vo/000/gvo00074/felicien/R/
-
-
-# A <- readRDS("/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted/Trendy.VISIT.S2.gpp.pantropical.v12.RDS") %>%
-#   rename(gpp = value)
-# B <- readRDS("/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted/Trendy.VISIT.S2.ra.pantropical.v12.RDS") %>%
-#   rename(ra = value)
-# A$ra <- B$ra
-#
-# Amod <- A %>%
-#   mutate(value = gpp - ra) %>%
-#   dplyr::select(-c(gpp,ra))
-#
-# saveRDS(Amod,
-#         "/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted/Trendy.VISIT.S2.npp.pantropical.v12.RDS")
-
+# scp /Users/felicien/Documents/projects/TrENDY.analyses/scripts/read.npppft.William.R hpc:/kyukon/data/gent/vo/000/gvo00074/felicien/R/
