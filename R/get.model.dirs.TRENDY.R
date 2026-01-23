@@ -1,4 +1,4 @@
-get.model.names.TRENDY <- function(version = "v11"){
+get.model.dirs.TRENDY <- function(version = "v11"){
 
   if (version == "v11"){
     model.names <- c("CABLE-POP","CLASSIC","CLM5.0","DLEM","IBIS","ISAM","ISBA-CTRIP",
@@ -16,13 +16,12 @@ get.model.names.TRENDY <- function(version = "v11"){
                      "JSBACH","JULES","LPJ-GUESS","LPJmL","LPJwsl",
                      "LPX-Bern","OCN","ORCHIDEE","SDGVM","VISIT","visit-ut")  # v12
   }  else if (version == "v14"){
-    model.names <- c("CABLE-POP","CARDAMOM","CLASSIC","CLM-FATES","CLM6.0",
-                     "DLEM","ELM-FATES","E3SM","EDv3",
-                     "IBIS","ISAM","ISBA-CTRIP","JULES",
-                     "JSBACH","JULES","LPJ-GUESS","LPJmL","LPJ-EOSIM",
-                     "LPX-Bern","OCN","ORCHIDEE","SDGVM","VISIT","GDSTEM","VISIT-UT",
+    model.names <- c("CABLE-POP","CARDAMOM","CLASSIC","CLM-FATES","CLM",
+                     "DLEM","ELM-FATES","ELM","ED",
+                     "IBIS","ISAM","ISBA-CTRIP","JULES-ES",
+                     "JSBACH","JULES","LPJ-GUESS","LPJml","LPJwsl",
+                     "LPX-Bern","OCN","ORCHIDEE","SDGVM","VISIT","TEM","VISIT-UT",
                      "iMAPLE")  # v14
-
   } else if (version == "Example"){
     model.names <- c("Example")
   } else {
