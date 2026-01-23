@@ -1,11 +1,12 @@
-read.Trendy <- function(ncfile,
-                        lat.names = c("latitude","lat","lat_FULL"),
-                        lon.names = c("longitude","lon","lon_FULL"),
-                        time.names = c("time","time_counter"),
-                        variables.names = c("npp"),
-                        years2select = c(-Inf,Inf),
-                        lat2select =  NULL,
-                        lon2select = NULL){
+read.Trendy.pft <- function(ncfile,
+                            lat.names = c("latitude","lat","lat_FULL"),
+                            lon.names = c("longitude","lon","lon_FULL"),
+                            time.names = c("time","time_counter"),
+                            variables.names = c("npp"),
+                            PFT.selection = 1,
+                            years2select = c(-Inf, Inf),
+                            lat2select =  NULL,
+                            lon2select = NULL){
 
   # library(ncdf4)
   # library(lubridate)
@@ -76,20 +77,6 @@ read.Trendy <- function(ncfile,
   }
 
 
-  # times <- NULL ; i = 1
-  #
-  # while(is.null(times) & i <= length(time.names)){
-  #   times <- tryCatch(suppressMessages(ncvar_get(nc,time.names[i])),
-  #                     error = function(e) NULL)
-  #
-  #   if (!is.null(times)) unit.time <- strsplit(ncatt_get(nc,time.names[i],"units")[["value"]], "\\s+")[[1]]
-  #
-  #   i = i + 1
-  # }
-  #
-  #
-
-
   nc2 <- RNetCDF::open.nc(ncfile)
 
   tunits <- NULL ; i = 1
@@ -114,16 +101,6 @@ read.Trendy <- function(ncfile,
   time.multiplier <- TrENDY.analyses::nc.get.time.multiplier(time.res)
 
 
-  # if (time.multiplier %in% c(86400,86400*365/12) & lubridate::day(time.origin) == 1){ # hack
-  #
-  #   warning(paste0("Correcting time for",ncfile))
-  #
-  #   months <- rep(1:12,length(times)/12)
-  #   times <- PCICt::as.PCICt.default(paste0(years,"/",sprintf("%02d",months),"/01"),
-  #                                    cal = "gregorian")
-  #
-  # }
-
   check.time <- years + (months - 1/2)/12
 
   if (min(diff(check.time)) == 0){
@@ -135,11 +112,7 @@ read.Trendy <- function(ncfile,
     }
 
     new.times <- PCICt::as.PCICt.default(paste0(years,"/",sprintf("%02d",months),"/01"),
-                                     cal = "gregorian")
-
-    # warning(paste("Correcting time for",ncfile,"\r\n",
-    #               "Previous times:",times,"\r\n",
-    #               "New times:",new.times,"\r\n"))
+                                         cal = "gregorian")
 
     times <- new.times
 
@@ -153,7 +126,6 @@ read.Trendy <- function(ncfile,
     }
 
   }
-
 
   round.years <- floor(years)
 
@@ -179,35 +151,47 @@ read.Trendy <- function(ncfile,
   }
 
   # Read values
+  # loop over PFTs
 
-  values <- NULL ; i = 1
-  while(is.null(values) & i <= length(variables.names)){
-    values <- tryCatch(ncvar_get(nc,variables.names[i],
-                                 start = c(min(select.lon),min(select.lat),min(select)),
-                                 count = c(length(select.lon),length(select.lat),length(select))),
-                       error = function(e) NULL)
-    i = i +1
+  all.df <- data.frame()
+
+  for (ipft in seq(1,length(PFT.selection))){
+
+    cpft <- PFT.selection[ipft]
+
+    values <- NULL ; i = 1
+    while(is.null(values) & i <= length(variables.names)){
+      values <- tryCatch(ncvar_get(nc,variables.names[i],
+                                   start = c(min(select.lon),min(select.lat),cpft,min(select)),
+                                   count = c(length(select.lon),length(select.lat),1,length(select))),
+                         error = function(e) NULL)
+      i = i +1
+    }
+
+
+    nc_close(nc)
+
+    cdf <- melt(values) %>%
+      rename(lon = Var1,
+             lat = Var2,
+             time = Var3) %>%
+      mutate(lon = lons[lon],
+             lat = lats[lat],
+             year = years.selected[time],
+             month = months.selected[time],
+             abs.time = abs.times.selected[time],
+             time = times.selected[time],
+             time.unit = as.character(tunits),
+      ) %>%
+      group_by(lat,lon) %>%
+      filter(!is.na(value))
+
+    all.df <- bind_rows(all.df,
+                        cdf %>%
+                          mutate(pft = cpft))
+
   }
 
-
-  nc_close(nc)
-
-  cdf <- melt(values) %>%
-    rename(lon = Var1,
-           lat = Var2,
-           time = Var3) %>%
-    mutate(lon = lons[lon],
-           lat = lats[lat],
-           year = years.selected[time],
-           month = months.selected[time],
-           abs.time = abs.times.selected[time],
-           time = times.selected[time],
-           time.unit = as.character(tunits),
-           ) %>%
-    group_by(lat,lon) %>%
-    # mutate(year =  round.years[select]) %>%
-    filter(!is.na(value))
-
-  return(cdf)
+  return(all.df)
 
 }
