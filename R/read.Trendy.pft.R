@@ -12,15 +12,15 @@ read.Trendy.pft <- function(ncfile,
   # library(lubridate)
   # library(reshape2)
   # #
-  ncfile = "/data/gent/vo/000/gvo00074/felicien/NPP_William/CABLE-POP_S2_npppft.nc"
-  lat.names = c("latitude","lat","lat_FULL")
-  lon.names = c("longitude","lon","lon_FULL")
-  time.names = c("time","time_counter")
-  variables.names = c("npppft")
-  years2select  = c(-Inf,Inf)
-  lat2select =  c(-5,15)
-  lon2select = NULL
-  PFT.selection = 1
+  # ncfile = "/data/gent/vo/000/gvo00074/felicien/NPP_William/CABLE-POP_S2_npppft.nc"
+  # lat.names = c("latitude","lat","lat_FULL")
+  # lon.names = c("longitude","lon","lon_FULL")
+  # time.names = c("time","time_counter")
+  # variables.names = c("npppft")
+  # years2select  = c(-Inf,Inf)
+  # lat2select =  c(-5,15)
+  # lon2select = NULL
+  # PFT.selection = 1
 
   nc <- nc_open(ncfile)
 
