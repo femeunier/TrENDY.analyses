@@ -17,9 +17,9 @@ get.model.names.TRENDY <- function(version = "v11"){
                      "LPX-Bern","OCN","ORCHIDEE","SDGVM","VISIT","visit-ut")  # v12
   }  else if (version == "v14"){
     model.names <- c("CABLE-POP","CARDAMOM","CLASSIC","CLM-FATES","CLM",
-                     "DLEM","ELM-FATES","ELM",
+                     "DLEM","ELM-FATES","ELM","ED",
                      "IBIS","ISAM","ISBA-CTRIP","JULES-ES",
-                     "JSBACH","JULES","LPJ-GUESS","LPJmL","LPJwsl",
+                     "JSBACH","JULES","LPJ-GUESS","LPJml","LPJwsl",
                      "LPX-Bern","OCN","ORCHIDEE","SDGVM","VISIT","TEM","VISIT-UT",
                      "iMAPLE")  # v14
   } else if (version == "Example"){
