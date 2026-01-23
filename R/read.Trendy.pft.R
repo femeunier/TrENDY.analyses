@@ -12,14 +12,15 @@ read.Trendy.pft <- function(ncfile,
   # library(lubridate)
   # library(reshape2)
   # #
-  # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv12/CARDAMOM_S2_gpp.nc"
-  # lat.names = c("latitude","lat","lat_FULL")
-  # lon.names = c("longitude","lon","lon_FULL")
-  # time.names = c("time","time_counter")
-  # variables.names = c("npp")
-  # years2select  = c(1960,Inf)
-  # lat2select =  c(-20,15)
-  # lon2select = c(-15,50)
+  ncfile = "/data/gent/vo/000/gvo00074/felicien/NPP_William/CABLE-POP_S2_npppft.nc"
+  lat.names = c("latitude","lat","lat_FULL")
+  lon.names = c("longitude","lon","lon_FULL")
+  time.names = c("time","time_counter")
+  variables.names = c("npppft")
+  years2select  = c(-Inf,Inf)
+  lat2select =  c(-5,15)
+  lon2select = NULL
+  PFT.selection = 1
 
   nc <- nc_open(ncfile)
 
@@ -168,9 +169,6 @@ read.Trendy.pft <- function(ncfile,
       i = i +1
     }
 
-
-    nc_close(nc)
-
     cdf <- melt(values) %>%
       rename(lon = Var1,
              lat = Var2,
@@ -186,11 +184,16 @@ read.Trendy.pft <- function(ncfile,
       group_by(lat,lon) %>%
       filter(!is.na(value))
 
-    all.df <- bind_rows(all.df,
-                        cdf %>%
-                          mutate(pft = cpft))
-
+    if (nrow(cdf) > 0){
+      if (nrow(all.df) == 0) {
+        all.df <- cdf
+      } else {
+        all.df <- bind_rows(all.df, cdf)
+      }
+    }
   }
+
+  nc_close(nc)
 
   return(all.df)
 

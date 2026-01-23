@@ -63,6 +63,56 @@ for (imodel in seq(1,length(model.dir))){
                          lat2select =  c(-25,25),
                          lon2select = NULL)
 
+      # Correct for times
+
+      cdf <- cdf %>%
+        mutate(time = as.Date(paste0(year,"/",month,"/01")))
+
+      cdf[["time"]][cdf[["time"]] < as.Date("1700/01/01")] <- as.Date("1700/01/01")
+
+      time.diff <- diff( cdf %>%
+                           ungroup() %>%
+                           filter(lat == lat[1],
+                                  lon == lon[1]) %>% pull(time))
+
+
+      if (any(time.diff <= 0)){
+        # wrong timeseries, correct
+
+        cdf <- cdf %>%
+          ungroup() %>%
+          group_by(lat,lon) %>%
+          mutate(diff.time = c(NA,diff(time))) %>%
+          mutate(time.true = case_when((diff.time > 0 | is.na(diff.time)) ~ time,
+                                       TRUE ~ NA_Date_)) %>%
+          mutate(time.true = as.Date(na.approx(time.true))) %>%
+          mutate(time = time.true) %>%
+          mutate(year = year(time),
+                 month = month(time)) %>%
+          dplyr::select(-c(diff.time,time.true))
+
+        print("Correcting timeseries")
+
+      }
+
+      time.diff <- diff( cdf %>%
+                           ungroup() %>%
+                           filter(lat == lat[1],
+                                  lon == lon[1]) %>% pull(time))
+
+      if (any(time.diff <= 0)){
+
+        cdf <- cdf %>%
+          group_by(lat,lon) %>%
+          mutate(month = rep(1:12,n()/12),
+                 year = sort(rep(1700:(1700 + n()/12 - 1),12))) %>%
+          mutate(time = as.Date(paste0(year,"/",month,"/01")))
+
+        print("Correcting timeseries (2)")
+
+      }
+
+
       print(paste(min(cdf$time),"-",max(cdf$time)))
 
 
