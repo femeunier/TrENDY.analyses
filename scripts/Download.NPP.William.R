@@ -3,14 +3,14 @@ rm(list = ls())
 library(httr2)
 library(xml2)
 library(stringr)
+library(TrENDY.analyses)
 library(dplyr)
 
 dest.dir <- "/data/gent/vo/000/gvo00074/felicien/NPP_William/"
 
 
 # NPPPFT
-files <- list_trendy_files(base_url,
-                         must_contain = c("S2", "_npppft","trendyv12"))
+files <- list_trendy_files(must_contain = c("S2", "_npppft","trendyv12"))
 
 files2download <- files %>%
   filter(model %in%
@@ -20,8 +20,7 @@ files2download <- files %>%
              "VISIT","LPX-Bern"))
 
 # NPP
-files2 <- list_trendy_files(base_url,
-                         must_contain = c("S2", "_npp.nc","trendyv12"))
+files2 <- list_trendy_files(must_contain = c("S2", "_npp.nc","trendyv12"))
 
 files2download2 <- files2 %>%
   filter(model %in%
@@ -30,10 +29,8 @@ files2download2 <- files2 %>%
   filter(!grepl("_mean",destination))
 
 # VISIT
-files2download3 <- bind_rows(list_trendy_files(base_url,
-                                               must_contain = c("S2", "_gpp.nc","trendyv12")),
-                             list_trendy_files(base_url,
-                                    must_contain = c("S2", "_ra.nc","trendyv12"))) %>%
+files2download3 <- bind_rows(list_trendy_files(must_contain = c("S2", "_gpp.nc","trendyv12")),
+                             list_trendy_files(must_contain = c("S2", "_ra.nc","trendyv12"))) %>%
   filter(model == "VISIT")
 
 
@@ -54,8 +51,9 @@ for (irow in seq(1,nrow(all.files2download))){
   if (file.exists(dest.file)) next()
 
   system2("wget",
-          all.files2download$url[irow],
-          dest.file)
+          c(all.files2download$url[irow],
+            "-O",
+            dest.file))
 
 }
 
