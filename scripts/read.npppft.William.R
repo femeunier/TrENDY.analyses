@@ -26,6 +26,10 @@ PFT.selections <- list(c(2,4),c(3,5),
                        c(1,2),c(2,3),c(2,3),
                        c(9,11),c(1),c(1,2))
 
+
+inversion <- rep(FALSE,length(model.names))
+inversion[model.names == "LPJ-GUESS"] <- TRUE
+
 model.dir <- rep("",length(model.names))
 scenarios <- c("S2")
 variables <- c("npppft")
@@ -70,7 +74,8 @@ for (imodel in seq(1,length(model.dir))){
                          PFT.selection = PFT.selections[[imodel]],
                          years2select = c(-Inf,Inf),
                          lat2select =  c(-25,25),
-                         lon2select = NULL)
+                         lon2select = NULL,
+                         invert.dimensions = inversion[imodel])
       print(summary(cdf$value))
 
       # Correct for times

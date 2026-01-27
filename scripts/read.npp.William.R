@@ -13,21 +13,20 @@ library(TrENDY.analyses)
 maindir <- "/data/gent/vo/000/gvo00074/felicien/NPP_William/"
 dest.dir <- "/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted"
 
-model.names <- c("VISIT")
+model.names <- get.model.names.TRENDY("v14")
 
 model.dir <- rep("",length(model.names))
 scenarios <- c("S2")
-variables <- c("gpp","ra")
+variables <- c("npp")
 
 ########################################################################
 # For reading
 variables.names <- list()
-variables.names[[1]] <- c("gpp","gpp_nlim")
-variables.names[[2]] <- c("ra","ra_nlim")
+variables.names[[1]] <- c("npp","npp_nlim")
 
 all.df <- data.frame()
 
-for (imodel in seq(1,length(model.dir))){
+for (imodel in seq(1,length(model.names))){
 
   print(paste0("",model.names[imodel]))
   for (iscenario in seq(1,length(scenarios))){
