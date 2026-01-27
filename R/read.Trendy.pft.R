@@ -6,21 +6,22 @@ read.Trendy.pft <- function(ncfile,
                             PFT.selection = 1,
                             years2select = c(-Inf, Inf),
                             lat2select =  NULL,
-                            lon2select = NULL){
+                            lon2select = NULL,
+                            invert.dimensions = FALSE){
 
   # library(ncdf4)
   # library(lubridate)
   # library(reshape2)
   # #
-  # ncfile = "/data/gent/vo/000/gvo00074/felicien/NPP_William/CLASSIC_S2_npppft.nc"
-  # lat.names = c("latitude","lat","lat_FULL")
-  # lon.names = c("longitude","lon","lon_FULL")
-  # time.names = c("time","time_counter")
-  # variables.names = c("npppft")
-  # years2select  = c(-Inf,Inf)
-  # lat2select =  c(-5,15)
-  # lon2select = NULL
-  # PFT.selection = c(3,5)
+  ncfile = "/data/gent/vo/000/gvo00074/felicien/NPP_William/LPJ-GUESS_S2_npppft.nc"
+  lat.names = c("latitude","lat","lat_FULL")
+  lon.names = c("longitude","lon","lon_FULL")
+  time.names = c("time","time_counter")
+  variables.names = c("npppft")
+  years2select  = c(-Inf,Inf)
+  lat2select =  c(-5,15)
+  lon2select = NULL
+  PFT.selection = c(3,5)
 
   nc <- nc_open(ncfile)
 
@@ -162,10 +163,20 @@ read.Trendy.pft <- function(ncfile,
 
     values <- NULL ; i = 1
     while(is.null(values) & i <= length(variables.names)){
-      values <- tryCatch(ncvar_get(nc,variables.names[i],
-                                   start = c(min(select.lon),min(select.lat),cpft,min(select)),
-                                   count = c(length(select.lon),length(select.lat),1,length(select))),
-                         error = function(e) NULL)
+
+      if (invert.dimensions){
+
+        values <- tryCatch(ncvar_get(nc,variables.names[i],
+                                     start = c(cpft,min(select.lon),min(select.lat),min(select)),
+                                     count = c(1,length(select.lon),length(select.lat),length(select))),
+                           error = function(e) NULL)
+      } else {
+        values <- tryCatch(ncvar_get(nc,variables.names[i],
+                                     start = c(min(select.lon),min(select.lat),cpft,min(select)),
+                                     count = c(length(select.lon),length(select.lat),1,length(select))),
+                           error = function(e) NULL)
+      }
+
       i = i +1
     }
 

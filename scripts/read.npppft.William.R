@@ -18,13 +18,13 @@ model.names <- c("CABLE-POP","CLASSIC",
                  "IBIS","ISAM",
                  "JSBACH","JULES","LPJ-GUESS",
                  "LPJmL","OCN","ORCHIDEE",
-                 "SDGVM","VISIT","LPX-Bern")[2]
+                 "SDGVM","VISIT","LPX-Bern")
 
-PFT.selections <- list(c(1),c(3,5),
+PFT.selections <- list(c(2,4),c(3,5),
                        c(2,4),c(1,2),
-                       c(3,4),c(1,2),c(8:10),
+                       c(3,4),c(8:10),c(8:10),
                        c(1,2),c(2,3),c(2,3),
-                       c(9,11),c(1),c(1))[2]
+                       c(9,11),c(1),c(1,2))
 
 model.dir <- rep("",length(model.names))
 scenarios <- c("S2")
@@ -83,7 +83,9 @@ for (imodel in seq(1,length(model.dir))){
       time.diff <- diff( cdf %>%
                            ungroup() %>%
                            filter(lat == lat[1],
-                                  lon == lon[1]) %>% pull(time))
+                                  lon == lon[1],
+                                  pft == pft[1]) %>%
+                           pull(time))
 
 
       if (any(time.diff <= 0)){
@@ -91,7 +93,7 @@ for (imodel in seq(1,length(model.dir))){
 
         cdf <- cdf %>%
           ungroup() %>%
-          group_by(lat,lon) %>%
+          group_by(lat,lon,pft) %>%
           mutate(diff.time = c(NA,diff(time))) %>%
           mutate(time.true = case_when((diff.time > 0 | is.na(diff.time)) ~ time,
                                        TRUE ~ NA_Date_)) %>%
@@ -108,12 +110,13 @@ for (imodel in seq(1,length(model.dir))){
       time.diff <- diff( cdf %>%
                            ungroup() %>%
                            filter(lat == lat[1],
-                                  lon == lon[1]) %>% pull(time))
+                                  lon == lon[1],
+                                  pft == pft[1]) %>% pull(time))
 
       if (any(time.diff <= 0)){
 
         cdf <- cdf %>%
-          group_by(lat,lon) %>%
+          group_by(lat,lon,pft) %>%
           mutate(month = rep(1:12,n()/12),
                  year = sort(rep(1700:(1700 + n()/12 - 1),12))) %>%
           mutate(time = as.Date(paste0(year,"/",month,"/01")))
@@ -138,12 +141,13 @@ for (imodel in seq(1,length(model.dir))){
       time.diff <- diff( cdf %>%
                            ungroup() %>%
                            filter(lat == lat[1],
-                                  lon == lon[1]) %>% pull(time))
+                                  lon == lon[1],
+                                  pft == pft[1]) %>% pull(time))
 
       if (any(time.diff <= 0)){
 
         cdf <- cdf %>%
-          group_by(lat,lon) %>%
+          group_by(lat,lon,pft) %>%
           mutate(month = rep(1:12,n()/12),
                  year = sort(rep(1700:(1700 + n()/12 - 1),12))) %>%
           mutate(time = as.Date(paste0(year,"/",month,"/01")))

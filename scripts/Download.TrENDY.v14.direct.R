@@ -10,7 +10,7 @@ dest.dir <- "/data/gent/vo/000/gvo00074/felicien/TrENDYv14/"
 model.dirs <- get.model.dirs.TRENDY("v14")
 model.names <- get.model.names.TRENDY("v14")
 
-variable.name <- "gpp"
+variable.name <- "npp"
 scenario <- c("S2")
 
 extensions <- c(".nc",".nc.gz",".nc.tar.gz")
