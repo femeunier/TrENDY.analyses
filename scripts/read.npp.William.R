@@ -5,6 +5,7 @@ library(reshape2)
 library(dplyr)
 library(lubridate)
 library(ggplot2)
+library(PCICt)
 library(tidyr)
 library(raster)
 library(RColorBrewer)
@@ -13,7 +14,7 @@ library(TrENDY.analyses)
 maindir <- "/data/gent/vo/000/gvo00074/felicien/NPP_William/"
 dest.dir <- "/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted"
 
-model.names <- get.model.names.TRENDY("v14")
+model.names <- get.model.names.TRENDY("v14")[7]
 
 model.dir <- rep("",length(model.names))
 scenarios <- c("S2")
