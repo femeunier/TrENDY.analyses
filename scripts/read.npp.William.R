@@ -18,12 +18,12 @@ model.names <- get.model.names.TRENDY("v14")
 
 model.dir <- rep("",length(model.names))
 scenarios <- c("S2")
-variables <- c("cRoot")
+variables <- c("cVeg")
 
 ########################################################################
 # For reading
 variables.names <- list()
-variables.names[[1]] <- c("cRoot")
+variables.names[[1]] <- c("cVeg")
 
 all.df <- data.frame()
 
@@ -137,9 +137,9 @@ for (imodel in seq(1,length(model.names))){
 
 # scp /Users/felicien/Documents/projects/TrENDY.analyses/scripts/read.npp.William.R hpc:/kyukon/data/gent/vo/000/gvo00074/felicien/R/
 
-# A <- readRDS("/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted/Trendy.LPJmL.S2.gpp.pantropical.v14.RDS") %>%
+# A <- readRDS("/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted/Trendy.VISIT.S2.gpp.pantropical.v14.RDS") %>%
 #   rename(gpp = value)
-# B <- readRDS("/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted/Trendy.LPJmL.S2.ra.pantropical.v14.RDS") %>%
+# B <- readRDS("/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted/Trendy.VISIT.S2.ra.pantropical.v14.RDS") %>%
 #   rename(ra = value)
 # A$ra <- B$ra
 #
@@ -148,5 +148,5 @@ for (imodel in seq(1,length(model.names))){
 #   dplyr::select(-c(gpp,ra))
 #
 # saveRDS(Amod,
-#         "/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted/Trendy.LPJmL.S2.npp.pantropical.v14.RDS")
+#         "/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted/Trendy.VISIT.S2.npp.pantropical.v14.RDS")
 

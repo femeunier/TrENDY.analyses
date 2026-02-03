@@ -20,7 +20,8 @@ model.names <- c("CABLE-POP","CLASSIC",
                  "IBIS",
                  "JSBACH","JULES","LPJ-GUESS",
                  "LPJmL","ORCHIDEE",
-                 "SDGVM","LPX-Bern")
+                 "SDGVM","LPX-Bern",
+                 "EDv3")
 
 PFT.selections <- list(c(2,4),c(3,5),
                        c(2,6),c(1,5),
@@ -28,7 +29,8 @@ PFT.selections <- list(c(2,4),c(3,5),
                        c(2,4),
                        c(3,4),c(1,2),c(8:10),
                        c(1,2),c(2,3),
-                       c(7,9),c(1,2))
+                       c(7,9),c(1,2),
+                       c(3:5))
 
 
 inversion <- rep(FALSE,length(model.names))
@@ -36,12 +38,12 @@ inversion[model.names == "LPJ-GUESS"] <- TRUE
 
 model.dir <- rep("",length(model.names))
 scenarios <- c("S2")
-variables <- c("npppft")
+variables <- c("cVegpft")
 
 ########################################################################
 # For reading
 variables.names <- list()
-variables.names[[1]] <- c("npp","npp_nlim","npppft","npppft_nlim")
+variables.names[[1]] <- c("cVegpft","cVegpft_nlim","cVeg","cVeg_nlim")
 
 all.df <- data.frame()
 

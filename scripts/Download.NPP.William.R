@@ -8,7 +8,6 @@ library(dplyr)
 
 dest.dir <- "/data/gent/vo/000/gvo00074/felicien/NPP_William/"
 
-
 # NPPPFT
 files <- list_trendy_files(must_contain = c("S2", "_npppft","trendyv12"))
 
