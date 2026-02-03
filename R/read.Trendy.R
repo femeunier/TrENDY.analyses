@@ -154,7 +154,7 @@ read.Trendy <- function(ncfile,
   if (isTRUE(all.equal(time.origin, PCICt::as.PCICt("0001-01-01", cal = "gregorian"))) &
       time.res %in% c("year","years")){
     months = round(0.5+12*(abs.times - floor(abs.times)))
-    years = floor(abs.times)
+    years = year(time.origin) + floor(abs.times)
 
     times <- as.Date(paste0(years,"/",months,"/","01"))
 
