@@ -14,11 +14,11 @@ library(TrENDY.analyses)
 maindir <- "/data/gent/vo/000/gvo00074/felicien/TrENDYv14/"
 dest.dir <- "/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted"
 
-model.names <- get.model.names.TRENDY("v14")[26]
+model.names <- get.model.names.TRENDY("v14")
 
 model.dir <- rep("",length(model.names))
 scenarios <- c("S2")
-variables <- c("cVeg")
+variables <- c("cRoot")
 
 ########################################################################
 # For reading
