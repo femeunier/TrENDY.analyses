@@ -23,7 +23,7 @@ variables <- c("cRoot")
 ########################################################################
 # For reading
 variables.names <- list()
-variables.names[[1]] <- c("cVeg")
+variables.names[[1]] <- c("cRoot")
 
 all.df <- data.frame()
 

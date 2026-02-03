@@ -11,11 +11,11 @@ read.Trendy <- function(ncfile,
   # library(lubridate)
   # library(reshape2)
   # #
-  # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv14/iMAPLE_S2_cVeg.nc"
+  # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv14/VISIT-UT_S2_cRoot.nc"
   # lat.names = c("latitude","lat","lat_FULL")
   # lon.names = c("longitude","lon","lon_FULL")
   # time.names = c("time","time_counter")
-  # variables.names = c("cVeg")
+  # variables.names = c("cRoot")
   # # years2select  = c(1960,Inf)
   # lat2select =  c(-20,15)
   # lon2select = c(-15,50)
@@ -141,9 +141,20 @@ read.Trendy <- function(ncfile,
 
   check.time <- years + (months - 1/2)/12
 
-  if (time.res %in% c("year","years") & any(diff(years) == 0)){
+  if (time.res %in% c("year","years") &
+      any(diff(years) == 0) & all(round(years) == years)){
     years = year(time.origin) + abs.times
     months = rep(month(time.origin),length(abs.times))
+    times <- as.Date(paste0(years,"/",months,"/","01"))
+
+    check.time <- years + (months - 1/2)/12
+  }
+
+  if (time.origin == PCICt::as.PCICt.default("1-01-01",
+                         cal = "gregorian") & time.res %in% c("year","years")){
+    months = round(0.5+12*(abs.times - floor(abs.times)))
+    years = floor(abs.times)
+
     times <- as.Date(paste0(years,"/",months,"/","01"))
 
     check.time <- years + (months - 1/2)/12
