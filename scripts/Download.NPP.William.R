@@ -23,9 +23,9 @@ files2download <- files %>%
 files2 <- list_trendy_files(must_contain = c("S2", "_npp.nc","trendyv12"))
 
 files2download2 <- files2 %>%
-  filter(model %in%
-           c("CARDAMOM","CLM5.0","DLEM","EDv3","E3SM",
-             "ISBA-CTRIP","JULES","LPJwsl","YIBs")) %>%
+  # filter(model %in%
+  #          c("CARDAMOM","CLM5.0","DLEM","EDv3","E3SM",
+  #            "ISBA-CTRIP","JULES","LPJwsl","YIBs")) %>%
   filter(!grepl("_mean",destination))
 
 # VISIT

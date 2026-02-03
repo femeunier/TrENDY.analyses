@@ -10,32 +10,37 @@ dest.dir <- "/data/gent/vo/000/gvo00074/felicien/TrENDYv14/"
 model.dirs <- get.model.dirs.TRENDY("v14")
 model.names <- get.model.names.TRENDY("v14")
 
-variable.name <- "npp"
+variable.names <- paste0(c("cVeg","cRoot","cWood"),"pft")
 scenario <- c("S2")
 
 extensions <- c(".nc",".nc.gz",".nc.tar.gz")
 
-for (imodel in seq(model.names)){
+for (variable.name in variable.names){
 
-  print(paste0("-",model.names[imodel]))
+  print(paste0("-",variable.name))
 
-  for (iextension in seq(1,length(extensions))){
-    dest.file.name <- paste0(model.names[imodel],"_",
-                             scenario,"_",variable.name,extensions[iextension])
+  for (imodel in seq(model.names)){
 
-    url <- paste0("https://s3.eu-west-1.wasabisys.com/gcb-2025-upload/land/output/",
-                  model.dirs[imodel],"/",scenario,"/",dest.file.name)
-    if (resp_status(resp <- request(url) |>
-        req_method("HEAD") |>
-        req_error(is_error = function(r) FALSE) |>
-        req_perform()) == 200) {
+    print(paste0("--",model.names[imodel]))
 
-      if (file.exists( file.path(dest.dir,dest.file.name))) next
+    for (iextension in seq(1,length(extensions))){
+      dest.file.name <- paste0(model.names[imodel],"_",
+                               scenario,"_",variable.name,extensions[iextension])
 
-      system2("wget",
-              c(url,
-                "-O",
-                file.path(dest.dir,dest.file.name)))
+      url <- paste0("https://s3.eu-west-1.wasabisys.com/gcb-2025-upload/land/output/",
+                    model.dirs[imodel],"/",scenario,"/",dest.file.name)
+      if (resp_status(resp <- request(url) |>
+                      req_method("HEAD") |>
+                      req_error(is_error = function(r) FALSE) |>
+                      req_perform()) == 200) {
+
+        if (file.exists( file.path(dest.dir,dest.file.name))) next
+
+        system2("wget",
+                c(url,
+                  "-O",
+                  file.path(dest.dir,dest.file.name)))
+      }
     }
   }
 }

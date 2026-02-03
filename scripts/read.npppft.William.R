@@ -11,20 +11,24 @@ library(RColorBrewer)
 library(TrENDY.analyses)
 library(zoo)
 
-maindir <- "/data/gent/vo/000/gvo00074/felicien/NPP_William/"
+maindir <- "/data/gent/vo/000/gvo00074/felicien/TrENDYv14/"
 dest.dir <- "/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted"
 
 model.names <- c("CABLE-POP","CLASSIC",
-                 "IBIS","ISAM",
+                 "CLM-FATES","ELM-FATES",
+                 "GDSTEM","iMAPLE",
+                 "IBIS",
                  "JSBACH","JULES","LPJ-GUESS",
-                 "LPJmL","OCN","ORCHIDEE",
-                 "SDGVM","VISIT","LPX-Bern")
+                 "LPJmL","ORCHIDEE",
+                 "SDGVM","LPX-Bern")
 
 PFT.selections <- list(c(2,4),c(3,5),
-                       c(2,4),c(1,2),
-                       c(3,4),c(8:10),c(8:10),
-                       c(1,2),c(2,3),c(2,3),
-                       c(9,11),c(1),c(1,2))
+                       c(2,6),c(1,5),
+                       c(4),c(1),
+                       c(2,4),
+                       c(3,4),c(1,2),c(8:10),
+                       c(1,2),c(2,3),
+                       c(7,9),c(1,2))
 
 
 inversion <- rep(FALSE,length(model.names))
@@ -67,7 +71,9 @@ for (imodel in seq(1,length(model.dir))){
 
 
       op <- paste0(dest.dir,"/",
-                   "Trendy.",cmodel,".",cscenario,".",cvariable,".pantropical.v12.RDS")
+                   "Trendy.",cmodel,".",cscenario,".",cvariable,".pantropical.v14.RDS")
+
+      if (file.exists(op)) next
 
       cdf <- read.Trendy.pft(ncfile,
                          variables.names = variables.names[[ivariable]],

@@ -105,6 +105,15 @@ read.Trendy.pft <- function(ncfile,
 
   check.time <- years + (months - 1/2)/12
 
+  if (time.res %in% c("year","years") & any(diff(years) == 0)){
+    years = year(time.origin) + abs.times
+    months = rep(month(time.origin),length(abs.times))
+    times <- as.Date(paste0(years,"/",months,"/","01"))
+
+    check.time <- years + (months - 1/2)/12
+  }
+
+
   if (min(diff(check.time)) == 0){
 
     months <- rep(1:12,length(times)/12)

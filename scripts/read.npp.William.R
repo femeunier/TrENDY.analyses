@@ -11,19 +11,19 @@ library(raster)
 library(RColorBrewer)
 library(TrENDY.analyses)
 
-maindir <- "/data/gent/vo/000/gvo00074/felicien/NPP_William/"
+maindir <- "/data/gent/vo/000/gvo00074/felicien/TrENDYv14/"
 dest.dir <- "/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted"
 
-model.names <- get.model.names.TRENDY("v14")[7]
+model.names <- get.model.names.TRENDY("v14")[26]
 
 model.dir <- rep("",length(model.names))
 scenarios <- c("S2")
-variables <- c("npp")
+variables <- c("cVeg")
 
 ########################################################################
 # For reading
 variables.names <- list()
-variables.names[[1]] <- c("npp","npp_nlim")
+variables.names[[1]] <- c("cVeg")
 
 all.df <- data.frame()
 
@@ -53,7 +53,9 @@ for (imodel in seq(1,length(model.names))){
 
 
       op <- paste0(dest.dir,"/",
-                   "Trendy.",cmodel,".",cscenario,".",cvariable,".pantropical.v12.RDS")
+                   "Trendy.",cmodel,".",cscenario,".",cvariable,".pantropical.v14.RDS")
+
+#       if (file.exists(op)) next
 
       cdf <- read.Trendy(ncfile,
                          variables.names = variables.names[[ivariable]],
@@ -135,10 +137,9 @@ for (imodel in seq(1,length(model.names))){
 
 # scp /Users/felicien/Documents/projects/TrENDY.analyses/scripts/read.npp.William.R hpc:/kyukon/data/gent/vo/000/gvo00074/felicien/R/
 
-
-# A <- readRDS("/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted/Trendy.VISIT.S2.gpp.pantropical.v12.RDS") %>%
+# A <- readRDS("/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted/Trendy.LPJmL.S2.gpp.pantropical.v14.RDS") %>%
 #   rename(gpp = value)
-# B <- readRDS("/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted/Trendy.VISIT.S2.ra.pantropical.v12.RDS") %>%
+# B <- readRDS("/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted/Trendy.LPJmL.S2.ra.pantropical.v14.RDS") %>%
 #   rename(ra = value)
 # A$ra <- B$ra
 #
@@ -147,5 +148,5 @@ for (imodel in seq(1,length(model.names))){
 #   dplyr::select(-c(gpp,ra))
 #
 # saveRDS(Amod,
-#         "/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted/Trendy.VISIT.S2.npp.pantropical.v12.RDS")
+#         "/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted/Trendy.LPJmL.S2.npp.pantropical.v14.RDS")
 

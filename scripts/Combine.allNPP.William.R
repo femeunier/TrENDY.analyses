@@ -4,7 +4,8 @@ library(dplyr)
 library(stringr)
 
 dir <- "/data/gent/vo/000/gvo00074/felicien/NPP_William/Formatted"
-files <- list.files(dir,full.names = TRUE)
+files <- list.files(dir,pattern = "v14",
+                    full.names = TRUE)
 
 dest <- c(24.5,0.8)
 
