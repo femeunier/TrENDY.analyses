@@ -11,7 +11,7 @@ read.Trendy <- function(ncfile,
   # library(lubridate)
   # library(reshape2)
   # #
-  # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv14/VISIT-UT_S2_cRoot.nc"
+  # ncfile = "/data/gent/vo/000/gvo00074/felicien/TrENDYv14/VISIT-UT_S2_cWood.nc"
   # lat.names = c("latitude","lat","lat_FULL")
   # lon.names = c("longitude","lon","lon_FULL")
   # time.names = c("time","time_counter")

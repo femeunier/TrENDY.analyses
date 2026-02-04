@@ -66,16 +66,19 @@ nc.get.time.origin <- function (f, v, time.dim.name, correct.for.gregorian.julia
       time.origin.string <- paste0(time.split[3],"-01")
     }
 
-    if (time.split[3] == "AD"){
+    if (time.split[3] == "AD" & length(time.split) == 3){
       time.split[3] <- "0001-01-01"
       time.split[c(4,5)] <- NA
       time.origin.string <- time.split[3]
+    } else if ((time.split[3] == "AD")){
+      time.origin.string <- time.split[4]
     }
-
 
     cal <- ifelse(time.calendar.att$hasatt, time.calendar.att$value,
                   "gregorian")
     time.origin.string <- gsub("O", "0", time.origin.string)
+    time.origin.string <- gsub("Jan", "01", time.origin.string)
+    time.origin.string <- gsub("1st", "01", time.origin.string)
     time.origin <- PCICt::as.PCICt.default(time.origin.string,
                                            cal = cal)
 
