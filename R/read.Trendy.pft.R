@@ -56,6 +56,23 @@ read.Trendy.pft <- function(ncfile,
   # ncdf4::nc_close(ncfilin)
 
   times <- TrENDY.analyses::nc.get.time.series(f = nc)
+
+  if (max(times) > as.PCICt("2100-01-01",attr(times, "cal"))){
+    times <- NULL ; i = 1
+
+    while(is.null(times) & i <= length(time.names)){
+      times <- tryCatch(suppressMessages(
+        times <- ncvar_get(nc,time.names[i])),
+        error = function(e) NULL)
+
+      i = i + 1
+    }
+    times <- as.Date(
+      paste0(floor(times),"/",
+             sprintf("%02d",1 + round(12*(times-floor(times)))),"/01"))
+  }
+
+
   old.times <- times
 
   if (all(is.na(times))){
